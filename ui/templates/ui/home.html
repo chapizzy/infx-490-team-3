@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FoodLens - Home</title>
+    <!-- Brand fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<!-- 
+<body>
+  <header class="site-header">
+    <img class="logo" src="{% static 'assets/logo.png' %}" alt="FoodLens logo">
+    <div class="brand"><span>FOOD</span><span class="orange">LENS</span></div>
+  </header>
+
+  <main class="container">
+    <section class="card" aria-labelledby="uploadTitle">
+      <h2 id="uploadTitle">Upload an Image</h2>
+
+      <input type="file" id="imageInput" accept="image/*">
+
+      <div class="field">
+        <label for="desc">Description</label>
+        <textarea id="desc" placeholder="Write a short description..."></textarea>
+      </div>
+
+      <button class="btn">Submit</button>
+    </section>
+  </main>
+</body>
+</html>
+-->
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-tile">
+        <img class="logo" src="{% static 'assets/logo.png' %}" alt="FoodLens logo">
+      </div>
+      <div class="brand"><span>FOOD</span><span class="orange">LENS</span></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card" aria-labelledby="uploadTitle">
+      <h2 id="uploadTitle">Upload an Image</h2>
+
+      <div class="field">
+        <label for="imageInput">Image</label>
+        <input type="file" id="imageInput" accept="image/*">
+      </div>
+
+      <div class="field">
+        <label for="desc">Description</label>
+        <textarea id="desc" placeholder="Write a short description..."></textarea>
+      </div>
+
+      <button class="btn">Submit</button>
+    </section>
+  </main>
+</body>
