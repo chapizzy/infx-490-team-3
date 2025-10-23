@@ -120,8 +120,8 @@ textarea:focus{
 .btn:hover{ background: var(--leaf-green); }
 
 .instructions{
-  background: var(--accent-orange);
-  border: 2px solid var(--accent-orange);
+  background: #fff;
+  border: var(--accent-orange);
   border-radius: var(--radius-md);
   padding: 16px 18px;
   box-shadow: 0 6px 18px rgba(0,0,0,.05);
@@ -155,12 +155,13 @@ textarea:focus{
   color: var(--primary-teal);
 }
 
-.instructions .note{
+.instructions-list .note{
   display: block;
   margin-top: 4px;
-  font-size: 13px;
+  padding-left: 8px;
+  font-size: 10px;
   font-style: italic;
-  color: var(--primary-teal);
+  opacity: 0.95;
 }
 
 .preview-container{
@@ -213,14 +214,4 @@ textarea:focus{
   .logo{ width: 28px; height: 28px; }
 }
 
-@media (max-width: 520px) {
-  .instructions{
-    padding: 12px 14px;
-    background: color-mix(in srgb, var(--accent-orange) 15%, white);
-  }
-
-  .instructions-list{
-    padding-left: 18px;
-  }
-}
 

@@ -30,7 +30,7 @@
 
       <div class="preview-container" aria-live="polite">
         <img id="previewImage" class="preview-image is-hidden" alt="" />
-        <div class="preivew-actions is-hidden" id="previewActions">
+        <div class="preview-actions is-hidden" id="previewActions">
           <button type="button" class="btn btn-secondary" id="replaceBtn">Replace Image</button>
           <button type="button" class="btn btn-ghost" id="clearBtn">Remove</button>
         </div>
@@ -38,12 +38,16 @@
 
       <div class="field">
         <label for="desc">How to Use FoodLens</label>
-        <div id="desc" class="instructions-list">
+        <div id="desc" class="instructions instructions-list">
           <ol>
-            <li>Pick the perishable food item of your choosing.</li>
+            <li>
+              Pick the perishable food item of your choice.
+              <span class="note">*Our AI model is currently trained only for apples, bananas, bitter gourds, capsicums, cucumbers, okras, oranges, potatoes, & tomatoes.*</span>
+              <span class="note">*Uploading other items may result in inaccurate results.*</span>
+            </li>
             <li>
               Open the FoodLens application.
-              <span class="note">Make sure access to your photo library is enabled to upload images.</span>
+              <span class="note">*Make sure access to your photo library is enabled to upload images.*</span>
             </li>
             <li>Upload <strong>one</strong> image of the perishable food item you selected.</li>
             <li>Click <em>Submit</em> when you're ready to see the quality of your food item!</li>
@@ -62,7 +66,7 @@
     const replaceBtn = document.getElementById('replaceBtn');
     const clearBtn = document.getElementById('clearBtn');
 
-    function showPreivew(file) {
+    function showPreview(file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         previewImage.src = e.target.result;
@@ -81,8 +85,8 @@
 
     imageInput.addEventListener('change', () => {
       const file = imageInput.files && imageInput.files[0];
-      if (file) showPreivew(file);
-      else clearPreview;
+      if (file) showPreview(file);
+      else clearPreview();
     });
 
     replaceBtn.addEventListener('click', () => {
