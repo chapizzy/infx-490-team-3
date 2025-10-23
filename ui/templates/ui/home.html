@@ -4,11 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <title>FoodLens - Home</title>
-    <!-- Brand fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
-
 <body>
   <header class="site-header">
     <div class="header-inner">
@@ -55,12 +53,48 @@
         </div>
       </div>
 
-      <button class="btn">Submit</button>
+      <button class="btn" id="submitBtn">Submit</button>
+
+      <!-- Placeholder for prediction result -->
+      <div id="result" class="prediction-result" style="margin-top: 20px;"></div>
+
     </section>
   </main>
 
   <script>
+    const submitBtn = document.getElementById('submitBtn');
     const imageInput = document.getElementById('imageInput');
+    const resultDiv = document.getElementById('result');
+
+    submitBtn.addEventListener('click', async () => {
+  if (!imageInput.files.length) {
+    alert("Please upload an image first!");
+    return;
+  }
+
+  const file = imageInput.files[0];
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const response = await fetch('/predict/', {
+    method: 'POST',
+    body: formData
+  });
+
+  const data = await response.json();
+
+  if (data.error) {
+    resultDiv.innerHTML = `<p style="color:red">${data.error}</p>`;
+    return;
+  }
+
+  // Display top 3 predictions
+  resultDiv.innerHTML = `<h3>Top 3 Prediction Result:</h3>`;
+  data.predictions.forEach((pred, idx) => {
+    resultDiv.innerHTML += `<p>${idx+1}. Class: <strong>${pred.label}</strong>, Confidence: <strong>${(pred.prob*100).toFixed(2)}%</strong></p>`;
+  });
+});
+    
     const previewImage = document.getElementById('previewImage');
     const previewActions = document.getElementById('previewActions');
     const replaceBtn = document.getElementById('replaceBtn');
@@ -97,3 +131,4 @@
     clearBtn.addEventListener('click', clearPreview);
   </script>
 </body>
+</html>
