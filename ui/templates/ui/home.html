@@ -8,30 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
-<!-- 
-<body>
-  <header class="site-header">
-    <img class="logo" src="{% static 'assets/logo.png' %}" alt="FoodLens logo">
-    <div class="brand"><span>FOOD</span><span class="orange">LENS</span></div>
-  </header>
 
-  <main class="container">
-    <section class="card" aria-labelledby="uploadTitle">
-      <h2 id="uploadTitle">Upload an Image</h2>
-
-      <input type="file" id="imageInput" accept="image/*">
-
-      <div class="field">
-        <label for="desc">Description</label>
-        <textarea id="desc" placeholder="Write a short description..."></textarea>
-      </div>
-
-      <button class="btn">Submit</button>
-    </section>
-  </main>
-</body>
-</html>
--->
 <body>
   <header class="site-header">
     <div class="header-inner">
@@ -49,6 +26,14 @@
       <div class="field">
         <label for="imageInput">Image</label>
         <input type="file" id="imageInput" accept="image/*">
+      </div>
+
+      <div class="preview-container" aria-live="polite">
+        <img id="previewImage" class="preview-image is-hidden" alt="" />
+        <div class="preivew-actions is-hidden" id="previewActions">
+          <button type="button" class="btn btn-secondary" id="replaceBtn">Replace Image</button>
+          <button type="button" class="btn btn-ghost" id="clearBtn">Remove</button>
+        </div>
       </div>
 
       <div class="field">
@@ -69,4 +54,42 @@
       <button class="btn">Submit</button>
     </section>
   </main>
+
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const previewImage = document.getElementById('previewImage');
+    const previewActions = document.getElementById('previewActions');
+    const replaceBtn = document.getElementById('replaceBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    function showPreivew(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewImage.src = e.target.result;
+        previewImage.classList.remove('is-hidden');
+        previewActions.classList.remove('is-hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearPreview() {
+      imageInput.value = '';
+      previewImage.src = '';
+      previewImage.classList.add('is-hidden');
+      previewActions.classList.add('is-hidden');
+    }
+
+    imageInput.addEventListener('change', () => {
+      const file = imageInput.files && imageInput.files[0];
+      if (file) showPreivew(file);
+      else clearPreview;
+    });
+
+    replaceBtn.addEventListener('click', () => {
+      // Let user pick a different image
+      imageInput.click();
+    });
+
+    clearBtn.addEventListener('click', clearPreview);
+  </script>
 </body>
