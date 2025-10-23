@@ -26,6 +26,14 @@
         <input type="file" id="imageInput" accept="image/*">
       </div>
 
+      <div class="preview-container" aria-live="polite">
+        <img id="previewImage" class="preview-image is-hidden" alt="" />
+        <div class="preivew-actions is-hidden" id="previewActions">
+          <button type="button" class="btn btn-secondary" id="replaceBtn">Replace Image</button>
+          <button type="button" class="btn btn-ghost" id="clearBtn">Remove</button>
+        </div>
+      </div>
+
       <div class="field">
         <label for="desc">How to Use FoodLens</label>
         <div id="desc" class="instructions-list">
@@ -82,6 +90,41 @@
     resultDiv.innerHTML += `<p>${idx+1}. Class: <strong>${pred.label}</strong>, Confidence: <strong>${(pred.prob*100).toFixed(2)}%</strong></p>`;
   });
 });
+    
+    const previewImage = document.getElementById('previewImage');
+    const previewActions = document.getElementById('previewActions');
+    const replaceBtn = document.getElementById('replaceBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    function showPreivew(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewImage.src = e.target.result;
+        previewImage.classList.remove('is-hidden');
+        previewActions.classList.remove('is-hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearPreview() {
+      imageInput.value = '';
+      previewImage.src = '';
+      previewImage.classList.add('is-hidden');
+      previewActions.classList.add('is-hidden');
+    }
+
+    imageInput.addEventListener('change', () => {
+      const file = imageInput.files && imageInput.files[0];
+      if (file) showPreivew(file);
+      else clearPreview;
+    });
+
+    replaceBtn.addEventListener('click', () => {
+      // Let user pick a different image
+      imageInput.click();
+    });
+
+    clearBtn.addEventListener('click', clearPreview);
   </script>
 </body>
 </html>
