@@ -9,17 +9,17 @@
 </head>
 <body>
   <header class="site-header">
-    <div class="header-inner">
-      <div class="logo-tile">
-        <img class="logo" src="{% static 'assets/logo.svg' %}" alt="FoodLens logo">
-      </div>
-      <div class="brand"><span>FOOD</span><span class="orange">LENS</span></div>
-
-      <nav class="nav-links">
-        <a href="{% url 'what_is_foodlens' %}" class="nav-link">What is FoodLens?</a>
-      </nav>
+  <div class="header-inner">
+    <div class="brand">
+      <img class="logo" src="{% static 'assets/logo.svg' %}" alt="FoodLens logo">
+      <span>FOOD</span><span class="orange">LENS</span>
     </div>
-  </header>
+
+    <nav class="nav-links">
+      <a href="{% url 'what_is_foodlens' %}" class="nav-link">What is FoodLens?</a>
+    </nav>
+  </div>
+</header>
 
   <main class="container">
     <section class="card" aria-labelledby="uploadTitle">

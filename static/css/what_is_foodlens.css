@@ -3,7 +3,7 @@
    ========================= */
 :root {
   --bg:           #faf9f6;   /* page background */
-  --primary-teal: #1c7c7d;   /* header + accents */
+  --primary-teal: #1c7d7c;   /* header + accents */
   --accent-orange:#ffa724;   /* CTA, brand "LENS" */
   --leaf-green:   #08af0f;   /* hover accent */
   --text:         #1f2a2a;   /* body text */
@@ -28,51 +28,72 @@ body {
   line-height: 1.6;
 }
 
-/* ===== Header ===== */
+/* ===== Header (matches home.css) ===== */
 .site-header {
-  background: var(--primary-teal);
-  color: #faf9f6;
-  padding: 22px 0;
+  background: #faf9f6;
+  color: #1c7d7c;
+  padding: 6px 0;
+  border-bottom: 1px solid #1c7d7c;
 }
+
 .header-inner {
   max-width: 920px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 12px;
+
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 14px;
+  justify-content: space-between;
+  gap: 8px;
 }
-.logo-tile {
-  width: 48px;
-  height: 48px;
-  background: #ffffff;
-  border-radius: var(--radius-sm);
-  display: grid;
-  place-items: center;
-  box-shadow: 0 6px 16px rgba(0,0,0,.12);
+
+/* Small logo next to text */
+.logo {
+  height: 120px;
+  width: auto;
+  display: block;
 }
-.logo { width: 32px; height: 32px; object-fit: contain; }
+
+/* Brand text with logo beside */
 .brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-family: var(--font-title);
   font-weight: 800;
   letter-spacing: .4px;
-  font-size: 30px;
+  font-size: 20px;
 }
-.brand .orange { color: var(--accent-orange); }
 
-/* ===== Header Navigation ===== */
-.nav-links { margin-left: auto; }
+/* Make "FOOD" teal and "LENS" orange */
+.brand span:first-child {
+  color: #1c7d7c;
+}
+.brand .orange {
+  color: var(--accent-orange);
+}
+
+/* ===== Header navigation link ===== */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .nav-link {
-  color: var(--bg);
+  color: #1c7d7c;
   font-family: var(--font-title);
   font-weight: 700;
-  font-size: 16px;
+  font-size: 14px;
   text-decoration: none;
-  margin-left: 24px;
-  transition: color 0.3s ease;
+  line-height: 1;
+  padding: 4px 0;
+  transition: color 0.2s ease;
 }
-.nav-link:hover { color: var(--accent-orange); }
+
+.nav-link:hover {
+  color: var(--accent-orange);
+}
 
 /* ===== About Page Layout ===== */
 .container {
@@ -80,6 +101,7 @@ body {
   margin: 48px auto;
   padding: 0 16px;
 }
+
 .about-columns {
   display: flex;
   gap: 40px;
@@ -87,10 +109,12 @@ body {
   align-items: flex-start;
   flex-wrap: wrap;
 }
+
 .left-column, .right-column {
   flex: 1;
   min-width: 320px;
 }
+
 .about-section {
   margin-bottom: 32px;
 }
@@ -103,6 +127,7 @@ body {
   font-weight: 700;
   margin-bottom: 10px;
 }
+
 .about-section p,
 .about-section ul,
 .about-section li {
@@ -111,10 +136,12 @@ body {
   font-size: 16px;
   line-height: 1.7;
 }
+
 .about-section strong {
   color: var(--primary-teal);
   font-weight: 700;
 }
+
 .team-list {
   list-style-type: disc;
   margin-left: 22px;
@@ -126,4 +153,10 @@ body {
   .about-columns {
     flex-direction: column;
   }
+}
+
+@media (max-width: 520px) {
+  .brand { font-size: 18px; }
+  .logo { height: 22px; }
+  .nav-link { font-size: 13px; }
 }

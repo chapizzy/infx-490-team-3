@@ -3,7 +3,7 @@
    ========================= */
 :root{
   --bg:           #faf9f6;   /* page background */
-  --primary-teal: #1c7c7d;   /* header + accents */
+  --primary-teal: #1c7d7c;   /* header + accents */
   --accent-orange:#ffa724;   /* CTA, brand "LENS" */
   --leaf-green:   #08af0f;   /* hover accent */
   --text:         #1f2a2a;   /* body text */
@@ -28,56 +28,73 @@ body{
   line-height: 1.5;
 }
 
-/* ===== Header (teal bar + centered brand row like mockup) ===== */
-.site-header{
-  background: var(--primary-teal);
-  color: #fff;
-  padding: 22px 0;
+/* ===== Header (light background with logo next to title) ===== */
+.site-header {
+  background: #faf9f6; /* header background */
+  color: #1c7d7c;      /* teal text */
+  padding: 6px 0;
+  border-bottom: 1px solid #1c7d7c; /* subtle divider line */
 }
-.header-inner{
+
+.header-inner {
   max-width: 920px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 12px;
 
   display: flex;
-  gap: 14px;
   align-items: center;
-  justify-content: center; /* center row in bar */
+  justify-content: space-between;
+  gap: 8px;
 }
-.logo-tile{
-  width: 48px; height: 48px;
-  background: #ffffff;
-  border-radius: var(--radius-sm);
-  display: grid; place-items: center;
-  box-shadow: 0 6px 16px rgba(0,0,0,.12);
+
+/* Small logo next to text */
+.logo {
+  height: 120px;
+  width: auto;
+  display: block;
 }
-.logo{ width: 32px; height: 32px; object-fit: contain; }
-.brand{
+
+/* Brand text with logo beside */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-family: var(--font-title);
   font-weight: 800;
   letter-spacing: .4px;
-  font-size: 30px;
+  font-size: 20px;
 }
-.brand .orange{ color: var(--accent-orange); }
+
+/* Make "FOOD" teal and "LENS" orange */
+.brand span:first-child {
+  color: #1c7d7c;
+}
+.brand .orange {
+  color: var(--accent-orange);
+}
 
 /* ===== Header navigation link ===== */
 .nav-links {
-  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .nav-link {
-  color: var(--bg);
+  color: #1c7d7c; /* teal link */
   font-family: var(--font-title);
   font-weight: 700;
-  font-size: 16px;
+  font-size: 14px;
   text-decoration: none;
-  margin-left: 24px;
-  transition: color 0.3s ease;
+  line-height: 1;
+  padding: 4px 0;
+  transition: color .2s ease;
 }
 
 .nav-link:hover {
   color: var(--accent-orange);
 }
+
 /* ===== Main card ===== */
 .container{ max-width: 920px; margin: 44px auto; padding: 0 16px; }
 .card{
@@ -206,7 +223,7 @@ textarea:focus{
 /* Utility to toggle visibility without inline styles */
 .is-hidden{ display: none !important; }
 
-/* Button variants to complement your existing .btn */
+/* Button variants */
 .btn-secondary{
   background: var(--primary-teal);
   color: #fff;
@@ -227,14 +244,7 @@ textarea:focus{
 
 /* Small tweak for narrow screens */
 @media (max-width: 520px){
-  .brand{ font-size: 24px; }
-  .logo-tile{ width: 44px; height: 44px; }
-  .logo{ width: 28px; height: 28px; }
-}
-
-@media (max-width: 520px) {
-  .nav-link {
-    font-size: 14px;
-    margin-left: 16px;
-  }
+  .brand{ font-size: 18px; }
+  .logo{ height: 22px; }
+  .nav-link{ font-size: 13px; }
 }
