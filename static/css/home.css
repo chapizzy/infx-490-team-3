@@ -60,6 +60,24 @@ body{
 }
 .brand .orange{ color: var(--accent-orange); }
 
+/* ===== Header navigation link ===== */
+.nav-links {
+  margin-left: auto;
+}
+
+.nav-link {
+  color: var(--bg);
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  margin-left: 24px;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--accent-orange);
+}
 /* ===== Main card ===== */
 .container{ max-width: 920px; margin: 44px auto; padding: 0 16px; }
 .card{
@@ -214,4 +232,9 @@ textarea:focus{
   .logo{ width: 28px; height: 28px; }
 }
 
-
+@media (max-width: 520px) {
+  .nav-link {
+    font-size: 14px;
+    margin-left: 16px;
+  }
+}

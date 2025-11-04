@@ -5,15 +5,19 @@
   <meta charset="UTF-8">
   <title>FoodLens - Home</title>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
 </head>
 <body>
   <header class="site-header">
     <div class="header-inner">
       <div class="logo-tile">
-        <img class="logo" src="{% static 'assets/logo.png' %}" alt="FoodLens logo">
+        <img class="logo" src="{% static 'assets/logo.svg' %}" alt="FoodLens logo">
       </div>
       <div class="brand"><span>FOOD</span><span class="orange">LENS</span></div>
+
+      <nav class="nav-links">
+        <a href="{% url 'what_is_foodlens' %}" class="nav-link">What is FoodLens?</a>
+      </nav>
     </div>
   </header>
 
@@ -42,10 +46,6 @@
               Pick the perishable food item of your choice.
               <span class="note">*Our AI model is currently trained only for apples, bananas, bitter gourds, capsicums, cucumbers, okras, oranges, potatoes, & tomatoes.*</span>
               <span class="note">*Uploading other items may result in inaccurate results.*</span>
-            </li>
-            <li>
-              Open the FoodLens application.
-              <span class="note">*Make sure access to your photo library is enabled to upload images.*</span>
             </li>
             <li>Upload <strong>one</strong> image of the perishable food item you selected.</li>
             <li>Click <em>Submit</em> when you're ready to see the quality of your food item!</li>

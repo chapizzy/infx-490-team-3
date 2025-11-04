@@ -1,0 +1,129 @@
+/* =========================
+   FoodLens Design Tokens
+   ========================= */
+:root {
+  --bg:           #faf9f6;   /* page background */
+  --primary-teal: #1c7c7d;   /* header + accents */
+  --accent-orange:#ffa724;   /* CTA, brand "LENS" */
+  --leaf-green:   #08af0f;   /* hover accent */
+  --text:         #1f2a2a;   /* body text */
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-lg: 0 18px 40px rgba(0,0,0,.08);
+
+  --font-title: "Raleway", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-body:  "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* ===== Base ===== */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--primary-teal);
+  font-family: var(--font-body);
+  line-height: 1.6;
+}
+
+/* ===== Header ===== */
+.site-header {
+  background: var(--primary-teal);
+  color: #faf9f6;
+  padding: 22px 0;
+}
+.header-inner {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.logo-tile {
+  width: 48px;
+  height: 48px;
+  background: #ffffff;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,.12);
+}
+.logo { width: 32px; height: 32px; object-fit: contain; }
+.brand {
+  font-family: var(--font-title);
+  font-weight: 800;
+  letter-spacing: .4px;
+  font-size: 30px;
+}
+.brand .orange { color: var(--accent-orange); }
+
+/* ===== Header Navigation ===== */
+.nav-links { margin-left: auto; }
+.nav-link {
+  color: var(--bg);
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  margin-left: 24px;
+  transition: color 0.3s ease;
+}
+.nav-link:hover { color: var(--accent-orange); }
+
+/* ===== About Page Layout ===== */
+.container {
+  max-width: 1080px;
+  margin: 48px auto;
+  padding: 0 16px;
+}
+.about-columns {
+  display: flex;
+  gap: 40px;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.left-column, .right-column {
+  flex: 1;
+  min-width: 320px;
+}
+.about-section {
+  margin-bottom: 32px;
+}
+
+/* ===== Section Titles and Text ===== */
+.about-section h3 {
+  color: var(--accent-orange);
+  font-family: var(--font-title);
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.about-section p,
+.about-section ul,
+.about-section li {
+  color: var(--primary-teal);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+}
+.about-section strong {
+  color: var(--primary-teal);
+  font-weight: 700;
+}
+.team-list {
+  list-style-type: disc;
+  margin-left: 22px;
+  line-height: 1.6;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .about-columns {
+    flex-direction: column;
+  }
+}
