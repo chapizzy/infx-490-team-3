@@ -58,11 +58,12 @@ body {
 .brand {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 8px;
   font-family: var(--font-title);
   font-weight: 800;
-  letter-spacing: .4px;
-  font-size: 20px;
+  letter-spacing: 0.4px;
+  font-size: 34px; 
 }
 
 /* Make "FOOD" teal and "LENS" orange */
