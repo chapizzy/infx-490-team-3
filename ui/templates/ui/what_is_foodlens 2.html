@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>What is FoodLens?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/what_is_foodlens.css' %}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <img class="logo" src="{% static 'assets/logo.svg' %}" alt="FoodLens logo">
+        <span>FOOD</span><span class="orange">LENS</span>
+      </div>
+
+      <nav class="nav-links">
+        <a href="{% url 'home' %}" class="nav-link">Back to Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container about-layout">
+    <div class="about-columns">
+      <div class="left-column">
+        <section class="about-section">
+          <h3 class="orange-text">About FoodLens</h3>
+          <p>
+            FoodLens is an innovative AI-powered application designed to assess
+            the quality and freshness of perishable food items. By combining
+            advanced image recognition technology with an intuitive user
+            interface, FoodLens helps consumers make safer, more informed
+            decisions about the food they eat. Our goal is to reduce food waste,
+            promote food safety awareness, and empower individuals to better
+            understand the lifespan of their produce.
+          </p>
+        </section>
+
+        <section class="about-section">
+          <h3 class="orange-text">Our Mission</h3>
+          <p>
+            We believe technology should make everyday choices smarter, safer,
+            and more sustainable. FoodLens represents our shared commitment to
+            innovation, education, and real-world impact. Our mission is to
+            harness the power of artificial intelligence to bridge the gap
+            between technology and everyday life, creating a tool that promotes
+            awareness, accessibility, and sustainability in food consumption.
+          </p>
+          <p>
+            Through this project, we aim to inspire change in how people think
+            about their food by empowering them to minimize waste, make informed
+            choices, and gain confidence in the quality of what they consume. By
+            combining data science, user-centered design, and creative
+            collaboration, we strive to make FoodLens not just an app, but a
+            step toward a smarter, more sustainable future.
+          </p>
+        </section>
+      </div>
+
+      <div class="right-column">
+        <section class="about-section">
+          <h3 class="orange-text">Our Team</h3>
+          <p>
+            FoodLens is developed by a dedicated team of five seniors at the
+            University of Louisiana at Lafayette, each bringing unique expertise
+            to the project. Together, we combine skills in software engineering,
+            artificial intelligence, data analytics, and user experience design
+            to deliver a product that is both technically robust and user
+            friendly.
+          </p>
+          <ul class="team-list">
+            <li><strong>Madeline Aymond</strong> focuses on the user experience and interface design, ensuring the application is visually appealing, responsive, and accessible across devices.</li>
+            <li><strong>Lillie Barker</strong> contributes to the front-end structure and layout, helping to create an intuitive workflow that enhances user engagement and usability.</li>
+            <li><strong>Danny Bui</strong> leads the development of FoodLens’s AI detection model, training the system to analyze and classify perishable foods through advanced image processing.</li>
+            <li><strong>Isabelle Chapman</strong> specializes in integrating the AI model with the backend systems and curating reliable data sets to improve accuracy and performance.</li>
+            <li><strong>Reece Melancon</strong> manages the database architecture and data storage solutions, ensuring efficient performance and secure handling of user and image data.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
