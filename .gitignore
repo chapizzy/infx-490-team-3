@@ -14,3 +14,5 @@ media/
 # IDEs
 .vscode/
 .idea/
+
+produce_images/
