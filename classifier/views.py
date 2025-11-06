@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from PIL import Image as PILImage
 from io import BytesIO
-from classifier.ml_models.predict import predict  # import your function
+from classifier.ml_models.predict import predict, segmented_predict, GROUPS  # import your function
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.base import ContentFile
 from ui.models import Image as ImageModel, Produce as ProduceModel
@@ -29,8 +29,20 @@ def predict_view(request):
         image_obj.status = 'analyzed'
         image_obj.save()
 
+        # Get top 3 predictions
         top_preds = predict(img, top_k=3)
 
-        return JsonResponse({"predictions": top_preds, "image_id": image_obj.id})
+        # If user selected a produce type, get segmented prediction
+        selected_produce = request.POST.get('produce_type')
+        segmented_result = None
 
+        if selected_produce and selected_produce in GROUPS:
+            segmented_result = segmented_predict(img, selected_produce)
+        
+        return JsonResponse({
+            "predictions": top_preds,
+            "segmented_result": segmented_result,
+            "available_produce": list(GROUPS.keys())
+        })
+    
     return JsonResponse({"error": "No image uploaded"}, status=400)
