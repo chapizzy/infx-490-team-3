@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *.env
 venv/
+.venv/
 
 # Django
 *.sqlite3
@@ -13,3 +14,5 @@ media/
 # IDEs
 .vscode/
 .idea/
+
+produce_images/
