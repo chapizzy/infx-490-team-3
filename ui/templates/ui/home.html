@@ -9,17 +9,17 @@
 </head>
 <body>
   <header class="site-header">
-  <div class="header-inner">
-    <div class="brand">
-      <img class="logo" src="{% static 'assets/logo.svg' %}" alt="FoodLens logo">
-      <span>FOOD</span><span class="orange">LENS</span>
-    </div>
+    <div class="header-inner">
+      <div class="brand">
+        <img class="logo" src="{% static 'assets/logo.svg' %}" alt="FoodLens logo">
+        <span>FOOD</span><span class="orange">LENS</span>
+      </div>
 
-    <nav class="nav-links">
-      <a href="{% url 'what_is_foodlens' %}" class="nav-link">What is FoodLens?</a>
-    </nav>
-  </div>
-</header>
+      <nav class="nav-links">
+        <a href="{% url 'what_is_foodlens' %}" class="nav-link">What is FoodLens?</a>
+      </nav>
+    </div>
+  </header>
 
   <main class="container">
     <section class="card" aria-labelledby="uploadTitle">
@@ -39,6 +39,22 @@
       </div>
 
       <div class="field">
+        <label for="produceSelect">Select Produce Type (Optional)</label>
+        <select id="produceSelect">
+          <option value="">-- Leave blank for top 3 predictions --</option>
+          <option value="apple">Apple</option>
+          <option value="banana">Banana</option>
+          <option value="bittergourd">Bitter Gourd</option>
+          <option value="capsicum">Capsicum</option>
+          <option value="cucumber">Cucumber</option>
+          <option value="okra">Okra</option>
+          <option value="orange">Orange</option>
+          <option value="potato">Potato</option>
+          <option value="tomato">Tomato</option>
+        </select>
+      </div>
+
+      <div class="field">
         <label for="desc">How to Use FoodLens</label>
         <div id="desc" class="instructions instructions-list">
           <ol>
@@ -48,6 +64,7 @@
               <span class="note">*Uploading other items may result in inaccurate results.*</span>
             </li>
             <li>Upload <strong>one</strong> image of the perishable food item you selected.</li>
+            <li>(Optional) Select the produce type to get a specific freshness score.</li>
             <li>Click <em>Submit</em> when you're ready to see the quality of your food item!</li>
           </ol>
         </div>
@@ -64,36 +81,54 @@
   <script>
     const submitBtn = document.getElementById('submitBtn');
     const imageInput = document.getElementById('imageInput');
+    const produceSelect = document.getElementById('produceSelect');
     const resultDiv = document.getElementById('result');
 
     submitBtn.addEventListener('click', async () => {
-  if (!imageInput.files.length) {
-    alert("Please upload an image first!");
-    return;
-  }
+      if (!imageInput.files.length) {
+        alert("Please upload an image first!");
+        return;
+      }
 
-  const file = imageInput.files[0];
-  const formData = new FormData();
-  formData.append('image', file);
+      const file = imageInput.files[0];
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      const selectedProduce = produceSelect.value;
+      if (selectedProduce) {
+        formData.append('produce_type', selectedProduce);
+      }
 
-  const response = await fetch('/predict/', {
-    method: 'POST',
-    body: formData
-  });
+      const response = await fetch('/predict/', {
+        method: 'POST',
+        body: formData
+      });
 
-  const data = await response.json();
+      const data = await response.json();
 
-  if (data.error) {
-    resultDiv.innerHTML = `<p style="color:red">${data.error}</p>`;
-    return;
-  }
+      if (data.error) {
+        resultDiv.innerHTML = `<p style="color:red">${data.error}</p>`;
+        return;
+      }
 
-  // Display top 3 predictions
-  resultDiv.innerHTML = `<h3>Top 3 Prediction Result:</h3>`;
-  data.predictions.forEach((pred, idx) => {
-    resultDiv.innerHTML += `<p>${idx+1}. Class: <strong>${pred.label}</strong>, Confidence: <strong>${(pred.prob*100).toFixed(2)}%</strong></p>`;
-  });
-});
+      // If produce type was selected, show freshness score
+      if (data.segmented_result) {
+        const seg = data.segmented_result;
+        resultDiv.innerHTML = `
+          <h3>Results:</h3>
+          <p><strong>Produce:</strong> ${seg.produce_type.charAt(0).toUpperCase() + seg.produce_type.slice(1)}</p>
+          <p><strong>Freshness Score:</strong> ${(((seg.fresh_prob / (seg.fresh_prob + seg.rotten_prob)) * 100).toFixed(2))}%</p>
+          <p><strong>Status:</strong> ${seg.status}</p>
+          <p>Fresh: ${(seg.fresh_prob * 100).toFixed(2)}% | Rotten: ${(seg.rotten_prob * 100).toFixed(2)}%</p>
+        `;
+      } else {
+        // Otherwise show top 3 predictions
+        resultDiv.innerHTML = `<h3>Top 3 Predictions:</h3>`;
+        data.predictions.forEach((pred, idx) => {
+          resultDiv.innerHTML += `<p>${idx+1}. ${pred.label}: ${(pred.prob*100).toFixed(2)}%</p>`;
+        });
+      }
+    });
     
     const previewImage = document.getElementById('previewImage');
     const previewActions = document.getElementById('previewActions');
@@ -124,7 +159,6 @@
     });
 
     replaceBtn.addEventListener('click', () => {
-      // Let user pick a different image
       imageInput.click();
     });
 
