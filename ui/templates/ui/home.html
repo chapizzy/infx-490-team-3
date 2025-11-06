@@ -93,6 +93,50 @@
   data.predictions.forEach((pred, idx) => {
     resultDiv.innerHTML += `<p>${idx+1}. Class: <strong>${pred.label}</strong>, Confidence: <strong>${(pred.prob*100).toFixed(2)}%</strong></p>`;
   });
+
+  // Add feedback form linked to this image (image_id returned by server)
+  if (data.image_id) {
+    resultDiv.innerHTML += `
+      <div id="feedbackBox" style="margin-top:16px;border-top:1px solid #eee;padding-top:12px;">
+        <h4>Was this helpful?</h4>
+        <div>
+          <label><input type="radio" name="helpful" value="true"> Yes</label>
+          <label style="margin-left:12px;"><input type="radio" name="helpful" value="false"> No</label>
+        </div>
+        <div style="margin-top:8px;">
+          <textarea id="feedbackExplanation" rows="3" style="width:100%;" placeholder="Optional: tell us more"></textarea>
+        </div>
+        <div style="margin-top:8px;">
+          <button id="feedbackSubmitBtn" class="btn">Submit feedback</button>
+          <span id="feedbackMessage" style="margin-left:8px;"></span>
+        </div>
+      </div>
+    `;
+
+    const feedbackSubmitBtn = document.getElementById('feedbackSubmitBtn');
+    feedbackSubmitBtn.addEventListener('click', async () => {
+      const helpfulInput = document.querySelector('input[name="helpful"]:checked');
+      if (!helpfulInput) {
+        document.getElementById('feedbackMessage').innerText = 'Please choose Yes or No.';
+        return;
+      }
+      const helpfulVal = helpfulInput.value === 'true';
+      const explanation = document.getElementById('feedbackExplanation').value;
+
+      const resp = await fetch('/feedback/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image_id: data.image_id, helpful: helpfulVal, explanation })
+      });
+      const json = await resp.json();
+      if (json.success) {
+        document.getElementById('feedbackMessage').innerText = 'Thanks for your feedback!';
+        feedbackSubmitBtn.disabled = true;
+      } else {
+        document.getElementById('feedbackMessage').innerText = json.error || 'Error submitting feedback';
+      }
+    });
+  }
 });
     
     const previewImage = document.getElementById('previewImage');

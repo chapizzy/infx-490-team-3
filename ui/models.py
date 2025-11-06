@@ -44,3 +44,17 @@ class AnalysisResult(models.Model):
 
     def __str__(self):
         return f"Analysis for Image {self.image.id}"
+
+
+class Feedback(models.Model):
+    """User feedback linked to an uploaded Image."""
+    image = models.ForeignKey(Image, on_delete=models.CASCADE, related_name='feedbacks')
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    helpful = models.BooleanField(null=True)
+    explanation = models.TextField(blank=True, null=True)
+    # store session key so we can track anonymous visitors across requests
+    session_key = models.CharField(max_length=40, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Feedback {self.id} for Image {self.image.id} - helpful={self.helpful}"
