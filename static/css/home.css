@@ -240,3 +240,87 @@ textarea:focus {
   .logo { height: 26px; }
   .nav-link { font-size: 13px; }
 }
+
+/* ===== Help / Popup Modal ===== */
+#helpBtn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--primary-teal);
+  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  transition: transform 0.15s ease;
+}
+
+#helpBtn:hover {
+  transform: scale(1.1);
+  background: var(--leaf-green);
+}
+
+/* Modal overlay */
+#instructionModal {
+  display: none; /* hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1040;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* Modal content */
+#instructionModal .modal-content {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  max-width: 560px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+
+/* Close button */
+#instructionModal .close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: var(--primary-teal);
+}
+
+#instructionModal .close-btn:hover {
+  color: var(--accent-orange);
+}
+
+/* "Don't show again" checkbox */
+#instructionModal .dont-show {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+#instructionModal .dont-show input[type="checkbox"] {
+  accent-color: var(--primary-teal);
+}

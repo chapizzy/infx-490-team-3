@@ -14,7 +14,6 @@
         <img class="logo" src="{% static 'assets/logo.svg' %}" alt="FoodLens logo">
         <span>FOOD</span><span class="orange">LENS</span>
       </div>
-
       <nav class="nav-links">
         <a href="{% url 'what_is_foodlens' %}" class="nav-link">What is FoodLens?</a>
       </nav>
@@ -54,56 +53,53 @@
         </select>
       </div>
 
-      <div class="field">
-        <label for="desc">How to Use FoodLens</label>
-        <div id="desc" class="instructions instructions-list">
-          <ol>
-            <li>
-              Pick the perishable food item of your choice.
-              <span class="note">*Our AI model is currently trained only for apples, bananas, bitter gourds, capsicums, cucumbers, okras, oranges, potatoes, & tomatoes.*</span>
-              <span class="note">*Uploading other items may result in inaccurate results.*</span>
-            </li>
-            <li>Upload <strong>one</strong> image of the perishable food item you selected.</li>
-            <li>(Optional) Select the produce type to get a specific freshness score.</li>
-            <li>Click <em>Submit</em> when you're ready to see the quality of your food item!</li>
-          </ol>
-        </div>
-      </div>
-
       <button class="btn" id="submitBtn">Submit</button>
 
-      <!-- Placeholder for prediction result -->
       <div id="result" class="prediction-result" style="margin-top: 20px;"></div>
-
     </section>
   </main>
 
+  <!-- ===== Help / Instruction Popup ===== -->
+  <button id="helpBtn">?</button>
+
+  <!-- Modal always rendered, hide initially if show_popup is false -->
+  <div id="instructionModal" style="{% if not show_popup %}display:none;{% endif %}">
+    <div class="modal-content">
+      <button class="close-btn">&times;</button>
+      <h3>How to Use FoodLens</h3>
+      <ol>
+        <li>
+          Pick the perishable food item of your choice.
+          <span class="note">*Our AI model is currently trained only for apples, bananas, bitter gourds, capsicums, cucumbers, okras, oranges, potatoes, & tomatoes.*</span>
+          <span class="note">*Uploading other items may result in inaccurate results.*</span>
+        </li>
+        <li>Upload <strong>one</strong> image of the perishable food item you selected.</li>
+        <li>(Optional) Select the produce type to get a specific freshness score.</li>
+        <li>Click <em>Submit</em> when you're ready to see the quality of your food item!</li>
+      </ol>
+      <div class="dont-show">
+        <input type="checkbox" id="dontShowAgain">
+        <label for="dontShowAgain">Don't show again</label>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // ===== Image + Prediction JS =====
     const submitBtn = document.getElementById('submitBtn');
     const imageInput = document.getElementById('imageInput');
     const produceSelect = document.getElementById('produceSelect');
     const resultDiv = document.getElementById('result');
 
     submitBtn.addEventListener('click', async () => {
-      if (!imageInput.files.length) {
-        alert("Please upload an image first!");
-        return;
-      }
+      if (!imageInput.files.length) { alert("Please upload an image first!"); return; }
 
       const file = imageInput.files[0];
       const formData = new FormData();
       formData.append('image', file);
-      
-      const selectedProduce = produceSelect.value;
-      if (selectedProduce) {
-        formData.append('produce_type', selectedProduce);
-      }
+      if (produceSelect.value) formData.append('produce_type', produceSelect.value);
 
-      const response = await fetch('/predict/', {
-        method: 'POST',
-        body: formData
-      });
-
+      const response = await fetch('/predict/', { method: 'POST', body: formData });
       const data = await response.json();
 
       if (data.error) {
@@ -111,7 +107,6 @@
         return;
       }
 
-      // If produce type was selected, show freshness score
       if (data.segmented_result) {
         const seg = data.segmented_result;
         resultDiv.innerHTML = `
@@ -122,14 +117,14 @@
           <p>Fresh: ${(seg.fresh_prob * 100).toFixed(2)}% | Rotten: ${(seg.rotten_prob * 100).toFixed(2)}%</p>
         `;
       } else {
-        // Otherwise show top 3 predictions
         resultDiv.innerHTML = `<h3>Top 3 Predictions:</h3>`;
         data.predictions.forEach((pred, idx) => {
           resultDiv.innerHTML += `<p>${idx+1}. ${pred.label}: ${(pred.prob*100).toFixed(2)}%</p>`;
         });
       }
     });
-    
+
+    // ===== Preview JS =====
     const previewImage = document.getElementById('previewImage');
     const previewActions = document.getElementById('previewActions');
     const replaceBtn = document.getElementById('replaceBtn');
@@ -158,11 +153,65 @@
       else clearPreview();
     });
 
-    replaceBtn.addEventListener('click', () => {
-      imageInput.click();
+    replaceBtn.addEventListener('click', () => imageInput.click());
+    clearBtn.addEventListener('click', clearPreview);
+
+    // ===== Modal / Help Button JS =====
+    const helpBtn = document.getElementById('helpBtn');
+    const modal = document.getElementById('instructionModal');
+    const closeBtn = modal.querySelector('.close-btn');
+    const dontShowCheckbox = document.getElementById('dontShowAgain');
+
+    async function getPopupState() {
+      try {
+        const resp = await fetch("{% url 'get_instruction_popup_state' %}");
+        if (!resp.ok) return;
+        const data = await resp.json();
+        dontShowCheckbox.checked = data.hide === true;
+      } catch (err) { console.error(err); }
+    }
+
+    async function hidePopupIfNeeded() {
+      const hide = dontShowCheckbox.checked;
+      try {
+        await fetch("{% url 'hide_instruction_popup' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+          },
+          body: JSON.stringify({ hide })
+        });
+      } catch (err) { console.error(err); }
+    }
+
+    async function showModal() {
+      await getPopupState(); // sync checkbox with backend
+      modal.style.display = 'flex';
+    }
+
+    // Page load: auto show only if show_popup true
+    if ("{{ show_popup }}".toLowerCase() === "true") modal.style.display = "flex";
+
+    // Always opens on ?
+    helpBtn.addEventListener('click', showModal);
+
+    // Close modal
+    closeBtn.addEventListener('click', async () => {
+      await hidePopupIfNeeded();
+      modal.style.display = 'none';
     });
 
-    clearBtn.addEventListener('click', clearPreview);
+    // Close on outside click
+    modal.addEventListener('click', async (e) => {
+      if (e.target === modal) {
+        await hidePopupIfNeeded();
+        modal.style.display = 'none';
+      }
+    });
+
+    // Sync checkbox on page load
+    getPopupState();
   </script>
 </body>
 </html>
