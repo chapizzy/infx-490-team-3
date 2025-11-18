@@ -63,7 +63,7 @@
   <button id="helpBtn">?</button>
 
   <!-- Modal always rendered, hide initially if show_popup is false -->
-  <div id="instructionModal" style="{% if not show_popup %}display:none;{% endif %}">
+  <div id="instructionModal" class="{% if not show_popup %}hidden{% endif %}">
     <div class="modal-content">
       <button class="close-btn">&times;</button>
       <h3>How to Use FoodLens</h3>
