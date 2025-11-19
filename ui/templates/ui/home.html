@@ -56,6 +56,23 @@
       <button class="btn" id="submitBtn">Submit</button>
 
       <div id="result" class="prediction-result" style="margin-top: 20px;"></div>
+
+      <!-- ===== Feedback ===== -->
+      <div id="feedbackBox" style="display:none; margin-top:16px;border-top:1px solid #eee;padding-top:12px;">
+        <h4>Was this helpful?</h4>
+        <div>
+          <label><input type="radio" name="helpful" value="true"> Yes</label>
+          <label style="margin-left:12px;"><input type="radio" name="helpful" value="false"> No</label>
+        </div>
+        <div style="margin-top:8px;">
+          <textarea id="feedbackExplanation" rows="3" style="width:100%;" placeholder="Optional: tell us more"></textarea>
+        </div>
+        <div style="margin-top:8px;">
+          <button id="feedbackSubmitBtn" class="btn">Submit feedback</button>
+          <span id="feedbackMessage" style="margin-left:8px;"></span>
+        </div>
+      </div>
+
     </section>
   </main>
 
@@ -106,6 +123,13 @@
         resultDiv.innerHTML = `<p style="color:red">${data.error}</p>`;
         return;
       }
+
+      // Show feedback section after a successful prediction
+      if (data.error) {
+        resultDiv.innerHTML = `<p style="color:red">${data.error}</p>`;
+        return;
+      }
+      document.getElementById('feedbackBox').style.display = 'block';
 
       if (data.segmented_result) {
         const seg = data.segmented_result;
@@ -212,6 +236,26 @@
 
     // Sync checkbox on page load
     getPopupState();
+
+    // Feedback
+    const feedbackSubmitBtn = document.getElementById('feedbackSubmitBtn');
+
+    if (feedbackSubmitBtn) {
+      feedbackSubmitBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        // Feedback submission logic here
+        const helpfulInput = document.querySelector('input[name="helpful"]:checked');
+        const messageSpan = document.getElementById('feedbackMessage');
+
+        if (!helpfulInput) {
+          messageSpan.innerText = 'Please choose Yes or No.';
+          return;
+        }
+
+        messageSpan.innerText = 'Thanks for your feedback!';
+        feedbackSubmitBtn.disabled = true;
+      });
+    }
   </script>
 </body>
 </html>
