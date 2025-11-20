@@ -114,12 +114,26 @@
       // If produce type was selected, show freshness score
       if (data.segmented_result) {
         const seg = data.segmented_result;
+        const adjusted_freshness = (((seg.fresh_prob / (seg.fresh_prob + seg.rotten_prob)) * 100).toFixed(2));
+        // determine color tier for the bar
+        const freshnessNum = parseFloat(adjusted_freshness);
+        let tierClass = 'fill-good';
+        if (freshnessNum >= 70) tierClass = 'fill-good';
+        else if (freshnessNum >= 40) tierClass = 'fill-medium';
+        else tierClass = 'fill-bad';
+
         resultDiv.innerHTML = `
           <h3>Results:</h3>
-          <p><strong>Produce:</strong> ${seg.produce_type.charAt(0).toUpperCase() + seg.produce_type.slice(1)}</p>
-          <p><strong>Freshness Score:</strong> ${(((seg.fresh_prob / (seg.fresh_prob + seg.rotten_prob)) * 100).toFixed(2))}%</p>
           <p><strong>Status:</strong> ${seg.status}</p>
           <p>Fresh: ${(seg.fresh_prob * 100).toFixed(2)}% | Rotten: ${(seg.rotten_prob * 100).toFixed(2)}%</p>
+
+          <div class="freshness-container" style="margin-top:10px;">
+            <label class="freshness-label" for="freshnessBar">Freshness</label>
+            <div id="freshnessBar" class="freshness-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${freshnessNum}">
+              <div class="freshness-bar__fill ${tierClass}" style="width: ${freshnessNum}%;"></div>
+            </div>
+            <div class="freshness-legend">${adjusted_freshness}%</div>
+          </div>
         `;
       } else {
         // Otherwise show top 3 predictions
