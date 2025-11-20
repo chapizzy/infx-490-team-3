@@ -19,4 +19,4 @@ class AnalysisResultAdmin(admin.ModelAdmin):
 
 @admin.register(Feedback)
 class FeedbackAdmin(admin.ModelAdmin):
-	list_display = ('id', 'image', 'user', 'helpful', 'session_key', 'created_at')
+	list_display = ('id', 'image', 'user', 'is_helpful', 'session_key', 'created_at')
