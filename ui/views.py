@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 import json
 from .models import Image as ImageModel, Feedback
 
@@ -10,6 +13,64 @@ def get_instruction_popup_state(request):
     else:
         hide = request.session.get('hide_instruction_popup', False)
     return JsonResponse({'hide': hide})
+
+
+@require_POST
+def ajax_login(request):
+    """AJAX endpoint to authenticate and log a user in.
+    Expects JSON or form data with 'username' and 'password'. Returns JSON.
+    """
+    try:
+        data = json.loads(request.body.decode('utf-8')) if request.body else request.POST
+    except Exception:
+        data = request.POST
+
+    username = data.get('username')
+    password = data.get('password')
+    if not username or not password:
+        return JsonResponse({'error': 'Missing username or password'}, status=400)
+
+    user = authenticate(request, username=username, password=password)
+    if user is None:
+        return JsonResponse({'error': 'Invalid credentials'}, status=401)
+
+    login(request, user)
+    return JsonResponse({'success': True, 'username': user.username})
+
+
+@require_POST
+def ajax_signup(request):
+    """AJAX endpoint to create a new user and log them in.
+    Expects JSON or form data with 'username' and 'password' (optional 'email').
+    """
+    try:
+        data = json.loads(request.body.decode('utf-8')) if request.body else request.POST
+    except Exception:
+        data = request.POST
+
+    username = data.get('username')
+    password = data.get('password')
+    email = data.get('email', '')
+
+    if not username or not password:
+        return JsonResponse({'error': 'Missing username or password'}, status=400)
+
+    if User.objects.filter(username=username).exists():
+        return JsonResponse({'error': 'Username already exists'}, status=409)
+
+    # basic password length check
+    if len(password) < 6:
+        return JsonResponse({'error': 'Password must be at least 6 characters'}, status=400)
+
+    user = User.objects.create_user(username=username, password=password, email=email)
+    user.save()
+    # log the new user in
+    user = authenticate(request, username=username, password=password)
+    if user:
+        login(request, user)
+        return JsonResponse({'success': True, 'username': user.username})
+
+    return JsonResponse({'error': 'Could not create user'}, status=500)
 
 
 # Home page view
