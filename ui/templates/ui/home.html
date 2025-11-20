@@ -172,6 +172,50 @@
     </div>
   </div>
 
+  <!-- ===== Auth Modal (login / signup) ===== -->
+  <div id="authModal">
+    <div class="auth-card">
+      <button class="auth-close">&times;</button>
+      <h3 id="authTitle">Welcome — Sign in</h3>
+
+      <div id="authError" class="error hidden"></div>
+
+      <div id="loginForm">
+        <div class="auth-field">
+          <label for="loginUsername">Username</label>
+          <input id="loginUsername" type="text" name="username" autocomplete="username">
+        </div>
+        <div class="auth-field">
+          <label for="loginPassword">Password</label>
+          <input id="loginPassword" type="password" name="password" autocomplete="current-password">
+        </div>
+        <div class="auth-actions">
+          <button id="loginBtn" class="btn">Sign in</button>
+          <div class="auth-toggle" id="showSignup">Create account</div>
+        </div>
+      </div>
+
+      <div id="signupForm" class="hidden">
+        <div class="auth-field">
+          <label for="signupUsername">Username</label>
+          <input id="signupUsername" type="text" name="username" autocomplete="username">
+        </div>
+        <div class="auth-field">
+          <label for="signupEmail">Email (optional)</label>
+          <input id="signupEmail" type="email" name="email" autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label for="signupPassword">Password</label>
+          <input id="signupPassword" type="password" name="password" autocomplete="new-password">
+        </div>
+        <div class="auth-actions">
+          <button id="signupBtn" class="btn">Create account</button>
+          <div class="auth-toggle" id="showLogin">Have an account?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ===== Image + Prediction JS =====
     const submitBtn = document.getElementById('submitBtn');
@@ -425,6 +469,103 @@
         }
       });
     }
+
+    // ===== Auth Modal JS =====
+    const authModal = document.getElementById('authModal');
+    const authClose = document.querySelector('#authModal .auth-close');
+    const authError = document.getElementById('authError');
+
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const showSignup = document.getElementById('showSignup');
+    const showLogin = document.getElementById('showLogin');
+
+    const loginBtn = document.getElementById('loginBtn');
+    const signupBtn = document.getElementById('signupBtn');
+
+    const CSRF_TOKEN = '{{ csrf_token }}';
+
+    function showAuthError(msg) {
+      authError.textContent = msg || '';
+      if (msg) authError.classList.remove('hidden');
+      else authError.classList.add('hidden');
+    }
+
+    function openAuthModal() {
+      showAuthError('');
+      authModal.style.display = 'flex';
+    }
+
+    function closeAuthModal() {
+      authModal.style.display = 'none';
+    }
+
+    // Show on first load (user requested modal pops up first)
+    openAuthModal();
+
+    authClose.addEventListener('click', () => {
+      closeAuthModal();
+    });
+
+    // Toggle between login/signup
+    showSignup.addEventListener('click', () => {
+      loginForm.classList.add('hidden');
+      signupForm.classList.remove('hidden');
+      document.getElementById('authTitle').textContent = 'Create an account';
+      showAuthError('');
+    });
+    showLogin.addEventListener('click', () => {
+      signupForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
+      document.getElementById('authTitle').textContent = 'Welcome — Sign in';
+      showAuthError('');
+    });
+
+    // Helper: post JSON with CSRF
+    async function postJson(url, payload) {
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': CSRF_TOKEN
+        },
+        body: JSON.stringify(payload)
+      });
+      const data = await resp.json().catch(()=>({ error: 'Invalid response' }));
+      return { ok: resp.ok, status: resp.status, data };
+    }
+
+    loginBtn.addEventListener('click', async () => {
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      if (!username || !password) return showAuthError('Please provide username and password');
+
+      const { ok, data } = await postJson("{% url 'ajax_login' %}", { username, password });
+      if (!ok) return showAuthError(data.error || 'Login failed');
+
+      // success: reload to update authenticated UI
+      location.reload();
+    });
+
+    signupBtn.addEventListener('click', async () => {
+      const username = document.getElementById('signupUsername').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPassword').value;
+      if (!username || !password) return showAuthError('Please provide username and password');
+
+      const { ok, status, data } = await postJson("{% url 'ajax_signup' %}", { username, email, password });
+      if (!ok) {
+        return showAuthError(data.error || 'Signup failed');
+      }
+
+      // success: reload and close
+      location.reload();
+    });
+
+    // Close auth modal if click outside card
+    authModal.addEventListener('click', (e) => {
+      if (e.target === authModal) closeAuthModal();
+    });
   </script>
 </body>
 </html>
