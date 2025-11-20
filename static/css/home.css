@@ -256,30 +256,21 @@ textarea:focus {
   width: 100%;
   background: #f2f2f2;
   border-radius: var(--radius-sm);
-  height: 18px;
+  height: 25px;
   overflow: hidden;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
 }
 .freshness-bar__fill {
   height: 100%;
-  /* final width is set inline (e.g. style="width: 75%") — we animate transform instead */
-  transform-origin: left center;
-  transform: scaleX(0);
-  will-change: transform;
-  animation: fillGrow 1250ms cubic-bezier(.22,.9,.31,1) forwards;
+  width: 0%;
+  background-color: red;
+  
+  /* smooth width and color transitions */
+  transition: width 1.8s cubic-bezier(0.25, 0.6, 0.5, 1),
+              background-color 1.8s cubic-bezier(0.25, 0.6, 0.5, 1);
 }
 .freshness-legend {
   margin-top: 8px;
   font-weight: 700;
   color: var(--text);
 }
-/* color tiers */
-.freshness-bar__fill.fill-good { background: linear-gradient(90deg, var(--leaf-green), #66d36a); }
-.freshness-bar__fill.fill-medium { background: linear-gradient(90deg, #f6b24d, var(--accent-orange)); }
-.freshness-bar__fill.fill-bad { background: linear-gradient(90deg, #f06a5a, #e74c3c); }
-
-@keyframes fillGrow {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
-}
-
