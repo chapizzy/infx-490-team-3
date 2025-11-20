@@ -293,6 +293,39 @@ textarea:focus {
   .nav-link { font-size: 13px; }
 }
 
+/* ===== Freshness progress bar ===== */
+.freshness-container {
+  margin-top: 8px;
+}
+.freshness-label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--primary-teal);
+  font-family: var(--font-title);
+}
+.freshness-bar {
+  width: 100%;
+  background: #f2f2f2;
+  border-radius: var(--radius-sm);
+  height: 25px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+}
+.freshness-bar__fill {
+  height: 100%;
+  width: 0%;
+  background-color: red;
+  
+  /* smooth width and color transitions */
+  transition: width 1.8s cubic-bezier(0.25, 0.6, 0.5, 1),
+              background-color 1.8s cubic-bezier(0.25, 0.6, 0.5, 1);
+}
+.freshness-legend {
+  margin-top: 8px;
+  font-weight: 700;
+  color: var(--text);
+}
 /* Slightly shrink icons on very small screens */
 @media (max-width: 480px) {
   .produce-image {
@@ -425,52 +458,4 @@ textarea:focus {
 
 .hidden {
   display: none !important;
-}
-
-/* ===== Auth Modal (login / signup) ===== */
-#authModal {
-  display: none; /* shown by JS on page load */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.45);
-  z-index: 1060; /* above instruction modal */
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  backdrop-filter: blur(2px);
-}
-
-#authModal .auth-card {
-  background: #fff;
-  border-radius: var(--radius-md);
-  padding: 20px 22px;
-  width: 100%;
-  max-width: 420px;
-  box-shadow: var(--shadow-lg);
-  position: relative;
-}
-
-#authModal h3 { margin-top: 0; margin-bottom: 8px; font-family: var(--font-title); color: var(--primary-teal); }
-
-.auth-field { margin-top: 10px; }
-.auth-field label { display:block; font-weight:700; margin-bottom:6px; }
-.auth-field input[type="text"], .auth-field input[type="password"], .auth-field input[type="email"] {
-  width: 100%; padding: 10px 12px; border: 2px solid #e6e6e6; border-radius: 8px; outline: none; font: inherit;
-}
-.auth-actions { margin-top: 14px; display:flex; gap:8px; align-items:center; }
-.auth-actions .btn { flex: 1; }
-.auth-toggle { margin-left: 8px; font-size: 0.95rem; color: var(--primary-teal); cursor: pointer; }
-
-#authModal .auth-close {
-  position: absolute; top: 10px; right: 10px; background: transparent; border: none; font-size: 22px; cursor: pointer; color: var(--text);
-}
-#authModal .auth-close:hover { color: var(--accent-orange); }
-
-#authModal .error { color: #b00020; margin-top: 8px; font-size: 0.95rem; }
-
-@media (max-width: 480px) {
-  #authModal .auth-card { padding: 16px; }
 }

@@ -238,14 +238,57 @@
 
       if (data.segmented_result) {
         const seg = data.segmented_result;
+        const adjusted_freshness =
+          ((seg.fresh_prob / (seg.fresh_prob + seg.rotten_prob)) * 100).toFixed(2);
+        const freshnessNum = parseFloat(adjusted_freshness);
+
+        // Render the bar HTML
         resultDiv.innerHTML = `
           <h3>Results:</h3>
-          <p><strong>Produce:</strong> ${seg.produce_type.charAt(0).toUpperCase() + seg.produce_type.slice(1)}</p>
-          <p><strong>Freshness Score:</strong> ${(((seg.fresh_prob / (seg.fresh_prob + seg.rotten_prob)) * 100).toFixed(2))}%</p>
           <p><strong>Status:</strong> ${seg.status}</p>
-          <p>Fresh: ${(seg.fresh_prob * 100).toFixed(2)}% | Rotten: ${(seg.rotten_prob * 100).toFixed(2)}%</p>
+          <p>Fresh: ${(seg.fresh_prob*100).toFixed(2)}% | Rotten: ${(seg.rotten_prob*100).toFixed(2)}%</p>
+
+          <div class="freshness-container">
+            <label class="freshness-label" for="freshnessBar">Freshness</label>
+            <div id="freshnessBar" class="freshness-bar" role="progressbar"
+                aria-valuemin="0" aria-valuemax="100" aria-valuenow="${freshnessNum}">
+              <div class="freshness-bar__fill"></div>
+            </div>
+            <div class="freshness-legend">${adjusted_freshness}%</div>
+          </div>
         `;
-      } else {
+
+        const fill = document.querySelector(".freshness-bar__fill");
+
+        // Compute final color based on freshness (final RGB)
+        let rFinal, gFinal, bFinal;
+        if (freshnessNum <= 50) {
+          // Red -> Orange
+          const t = freshnessNum / 50; // 0.0 - 1.0
+          rFinal = 255;
+          gFinal = Math.round(165 * t);
+          bFinal = 0;
+        } else {
+          // Orange -> Green
+          const t = (freshnessNum - 50) / 50; // 0.0 - 1.0
+          rFinal = Math.round(255 - 255 * t);       // 255->0
+          gFinal = Math.round(165 + (128-165) * t); // 165->128
+          bFinal = 0;
+        }
+
+        fill.style.width = '0%';
+        fill.style.backgroundColor = 'rgb(255,0,0)';
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            fill.style.width = `${freshnessNum}%`;
+            fill.style.backgroundColor = `rgb(${rFinal},${gFinal},${bFinal})`;
+          });
+        });
+
+      } 
+      else {
+        // Otherwise show top 3 predictions
         resultDiv.innerHTML = `<h3>Top 3 Predictions:</h3>`;
         data.predictions.forEach((pred, idx) => {
           resultDiv.innerHTML += `<p>${idx+1}. ${pred.label}: ${(pred.prob*100).toFixed(2)}%</p>`;
