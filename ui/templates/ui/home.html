@@ -127,6 +127,23 @@
       <button class="btn" id="submitBtn">Submit</button>
 
       <div id="result" class="prediction-result" style="margin-top: 20px;"></div>
+
+      <!-- ===== Feedback ===== -->
+      <div id="feedbackBox" style="display:none; margin-top:16px;border-top:1px solid #eee;padding-top:12px;">
+        <h4>Was this helpful?</h4>
+        <div>
+          <label><input type="radio" name="helpful" value="true"> Yes</label>
+          <label style="margin-left:12px;"><input type="radio" name="helpful" value="false"> No</label>
+        </div>
+        <div style="margin-top:8px;">
+          <textarea id="feedbackExplanation" rows="3" style="width:100%;" placeholder="Optional: tell us more"></textarea>
+        </div>
+        <div style="margin-top:8px;">
+          <button id="feedbackSubmitBtn" class="btn">Submit feedback</button>
+          <span id="feedbackMessage" style="margin-left:8px;"></span>
+        </div>
+      </div>
+
     </section>
   </main>
 
@@ -212,6 +229,9 @@
       return selected ? selected.value : '';
     }
 
+    // Hold id of image just analyzed
+    let currentImageId = null;
+
     submitBtn.addEventListener('click', async () => {
       if (!imageInput.files.length) { 
         alert("Please upload an image first!"); 
@@ -221,20 +241,28 @@
       const file = imageInput.files[0];
       const formData = new FormData();
       formData.append('image', file);
-
-      const produceType = getSelectedProduce();
-      // Only send produce_type if user picked a specific item (not "I'm Unsure")
-      if (produceType) {
-        formData.append('produce_type', produceType);
+      //if (produceSelect.value) formData.append('produce_type', produceSelect.value);
+      if (produceSelect.value) {
+        formData.append('produce_type', produceSelect.value);
       }
 
       const response = await fetch('/predict/', { method: 'POST', body: formData });
       const data = await response.json();
 
+      // Handle error
       if (data.error) {
         resultDiv.innerHTML = `<p style="color:red">${data.error}</p>`;
+        // Hide feedback box if there was an error
+        document.getElementById('feedbackBox').style.display = 'none';
+        currentImageId = null;
         return;
       }
+
+      // Recall image ID for feedback
+      currentImageId = data.image_id || null;
+
+      // Always show feedback box after successful submission
+      document.getElementById('feedbackBox').style.display = 'block';
 
       if (data.segmented_result) {
         const seg = data.segmented_result;
@@ -384,6 +412,63 @@
 
     // Sync checkbox on page load
     getPopupState();
+
+    // Feedback
+    const feedbackSubmitBtn = document.getElementById('feedbackSubmitBtn');
+
+    if (feedbackSubmitBtn) {
+      feedbackSubmitBtn.addEventListener('click', async (event) => {
+        event.preventDefault();
+
+        const helpfulInput = document.querySelector('input[name="helpful"]:checked');
+        const explanationInput = document.getElementById('feedbackExplanation');
+        const messageSpan = document.getElementById('feedbackMessage');
+
+        // Make sure user chooses Yes or No
+        if (!helpfulInput) {
+          messageSpan.innerText = 'Please choose Yes or No.';
+          return;
+        }
+
+        // Make sure there is actually an image to analyze
+        if (!currentImageId) {
+          messageSpan.innerText = 'Please submit an image first.';
+          return;
+        }
+
+        // Build data to send 
+        const payload = {
+          //image_id: window.currentImageID || null,  // may need to set this when you get a prediction
+          image_id: currentImageId,
+          helpful: helpfulInput.value,
+          explanation: explanationInput.value
+        };
+
+        try {
+          const response = await fetch("{% url 'submit_feedback' %}", {
+          //const response = await fetch('/submit_feedback/', {
+            method: 'POST',
+            //headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+            body: JSON.stringify(payload)
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            messageSpan.innerText = 'Thanks for your feedback!';
+            feedbackSubmitBtn.disabled = true; // Prevents re-clicking
+          } else {
+            //messageSpan.innerText = 'Error saving feedback.';
+            messageSpan.innerText = result.error || 'Error saving feedback.';
+          }
+        }
+        catch (err) {
+          console.error(err);
+          messageSpan.innerText = 'Error submitting feedback.';
+        }
+      });
+    }
 
     // ===== Auth Modal JS =====
     const authModal = document.getElementById('authModal');

@@ -42,7 +42,8 @@ def predict_view(request):
         return JsonResponse({
             "predictions": top_preds,
             "segmented_result": segmented_result,
-            "available_produce": list(GROUPS.keys())
+            "available_produce": list(GROUPS.keys()),
+            "image_id": image_obj.id,
         })
     
     return JsonResponse({"error": "No image uploaded"}, status=400)
