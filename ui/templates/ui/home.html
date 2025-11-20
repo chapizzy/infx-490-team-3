@@ -108,27 +108,36 @@
     const produceSelect = document.getElementById('produceSelect');
     const resultDiv = document.getElementById('result');
 
+    // Hold id of image just analyzed
+    let currentImageId = null;
+
     submitBtn.addEventListener('click', async () => {
       if (!imageInput.files.length) { alert("Please upload an image first!"); return; }
 
       const file = imageInput.files[0];
       const formData = new FormData();
       formData.append('image', file);
-      if (produceSelect.value) formData.append('produce_type', produceSelect.value);
+      //if (produceSelect.value) formData.append('produce_type', produceSelect.value);
+      if (produceSelect.value) {
+        formData.append('produce_type', produceSelect.value);
+      }
 
       const response = await fetch('/predict/', { method: 'POST', body: formData });
       const data = await response.json();
 
+      // Handle error
       if (data.error) {
         resultDiv.innerHTML = `<p style="color:red">${data.error}</p>`;
+        // Hide feedback box if there was an error
+        document.getElementById('feedbackBox').style.display = 'none';
+        currentImageId = null;
         return;
       }
 
-      // Show feedback section after a successful prediction
-      if (data.error) {
-        resultDiv.innerHTML = `<p style="color:red">${data.error}</p>`;
-        return;
-      }
+      // Recall image ID for feedback
+      currentImageId = data.image_id || null;
+
+      // Always show feedback box after successful submission
       document.getElementById('feedbackBox').style.display = 'block';
 
       if (data.segmented_result) {
@@ -241,19 +250,56 @@
     const feedbackSubmitBtn = document.getElementById('feedbackSubmitBtn');
 
     if (feedbackSubmitBtn) {
-      feedbackSubmitBtn.addEventListener('click', (event) => {
+      feedbackSubmitBtn.addEventListener('click', async (event) => {
         event.preventDefault();
-        // Feedback submission logic here
+
         const helpfulInput = document.querySelector('input[name="helpful"]:checked');
+        const explanationInput = document.getElementById('feedbackExplanation');
         const messageSpan = document.getElementById('feedbackMessage');
 
+        // Make sure user chooses Yes or No
         if (!helpfulInput) {
           messageSpan.innerText = 'Please choose Yes or No.';
           return;
         }
 
-        messageSpan.innerText = 'Thanks for your feedback!';
-        feedbackSubmitBtn.disabled = true;
+        // Make sure there is actually an image to analyze
+        if (!currentImageId) {
+          messageSpan.innerText = 'Please submit an image first.';
+          return;
+        }
+
+        // Build data to send 
+        const payload = {
+          //image_id: window.currentImageID || null,  // may need to set this when you get a prediction
+          image_id: currentImageId,
+          helpful: helpfulInput.value,
+          explanation: explanationInput.value
+        };
+
+        try {
+          const response = await fetch("{% url 'submit_feedback' %}", {
+          //const response = await fetch('/submit_feedback/', {
+            method: 'POST',
+            //headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+            body: JSON.stringify(payload)
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            messageSpan.innerText = 'Thanks for your feedback!';
+            feedbackSubmitBtn.disabled = true; // Prevents re-clicking
+          } else {
+            //messageSpan.innerText = 'Error saving feedback.';
+            messageSpan.innerText = result.error || 'Error saving feedback.';
+          }
+        }
+        catch (err) {
+          console.error(err);
+          messageSpan.innerText = 'Error submitting feedback.';
+        }
       });
     }
   </script>
