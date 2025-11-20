@@ -1,64 +1,45 @@
 from django.db import models
 from django.contrib.auth.models import User  # for user_id foreign key
 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    show_instruction_popup = models.BooleanField(default=True)  # True = show on first load
-
-    def __str__(self):
-        return f"{self.user.username} Profile"
-
-# Automatically create or update UserProfile when User is saved
-@receiver(post_save, sender=User)
-def create_or_update_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
-    else:
-        instance.profile.save()
-
-
 class Produce(models.Model):
-    name = models.CharField(max_length=255)
-    category = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, null=False)
+    category = models.CharField(max_length=255, null=False)
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
 
-
 class Image(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('processing', 'Processing'),
-        ('analyzed', 'Analyzed'),
+        ('analyzed', 'Analyzed')
     ]
 
-    produce = models.ForeignKey(Produce, on_delete=models.CASCADE, related_name='images')
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    image_path = models.ImageField(upload_to='produce_images/')
+    produce = models.ForeignKey(Produce, on_delete=models.CASCADE)
+    # Reference the project's configured user model to avoid hard-coding the auth model
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    image_path = models.TextField(null=False)
     upload_timestamp = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     deleted = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Image {self.id} - {self.produce.name}"
-
+        return f"Image {self.id} for {self.produce.name}"
 
 class AnalysisResult(models.Model):
-    FRESHNESS_LABEL_CHOICES = [
+    FRESHNESS_LABELS = [
         ('good', 'Good'),
-        ('bad', 'Bad'),
+        ('bad', 'Bad')
     ]
 
-    image = models.ForeignKey(Image, on_delete=models.CASCADE, related_name='analysis_results')
-    freshness_score = models.IntegerField(null=True, blank=True)
-    freshness_label = models.CharField(max_length=10, choices=FRESHNESS_LABEL_CHOICES, null=True, blank=True)
-    defects_detected = models.JSONField(null=True, blank=True)  # Django handles JSON natively
-    confidence_score = models.FloatField(null=True, blank=True)
+    image = models.ForeignKey(Image, on_delete=models.CASCADE)
+    # freshness_score: percentage-like (0-100)
+    freshness_score = models.IntegerField(null=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    freshness_label = models.CharField(max_length=10, choices=FRESHNESS_LABELS, null=True)
+    defects_detected = models.JSONField(null=True, blank=True)  # Django can store JSON natively
+    confidence_score = models.FloatField(null=True)
     analyzed_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -77,3 +58,25 @@ class Feedback(models.Model):
 
     def __str__(self):
         return f"Feedback {self.id} for Image {self.image.id} - helpful={self.helpful}"
+
+class Review(models.Model):
+    # Use the configured user model for compatibility with the project's auth setup
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    produce = models.ForeignKey(Produce, on_delete=models.CASCADE)
+    # rating: 1-5 expected
+    rating = models.IntegerField(null=False, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    comment = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Review by {self.user.email} for {self.produce.name}"
+
+class Feedback(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    image = models.ForeignKey(Image, on_delete=models.CASCADE)
+    is_helpful = models.BooleanField(default=False)
+    explanation = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Feedback by {self.user.email} on Image {self.image.id}"
