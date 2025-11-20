@@ -34,7 +34,7 @@ body{
   color: #1c7d7c;
   padding: 8px 0;
   border-bottom: 1px solid #1c7d7c;
-  position: relative; /* allows absolute positioning for nav-links */
+  position: relative;
 }
 
 .header-inner {
@@ -43,7 +43,7 @@ body{
   padding: 0 12px;
   display: flex;
   align-items: center;
-  justify-content: center; /* centers logo + title */
+  justify-content: center;
   position: relative;
 }
 
@@ -56,11 +56,11 @@ body{
   font-family: var(--font-title);
   font-weight: 800;
   letter-spacing: 0.4px;
-  font-size: 34px; /* larger title */
+  font-size: 34px;
 }
 
 .logo {
-  height: 120px; /* smaller balanced logo */
+  height: 120px;
   width: auto;
   display: block;
 }
@@ -154,7 +154,7 @@ textarea:focus {
 }
 .btn:hover { background: var(--leaf-green); }
 
-/* ===== Instructions ===== */
+/* ===== Instructions (if used elsewhere) ===== */
 .instructions {
   background: #fff;
   border: var(--accent-orange);
@@ -234,11 +234,71 @@ textarea:focus {
   background: var(--primary-teal);
 }
 
+/* =========================
+   Produce Selector (Image Buttons)
+   ========================= */
+.produce-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+  align-items: center;
+}
+
+.produce-option {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+}
+
+/* Hide the actual radio */
+.produce-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Card wrapper – minimal, no visible box */
+.produce-card {
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(1);
+  transition: transform 0.15s ease;
+}
+
+/* The icon itself */
+.produce-image {
+  width: 135px;
+  height: 135px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Hover: grow a bit */
+.produce-card:hover {
+  transform: scale(1.12);
+}
+
+/* Selected: grow more */
+.produce-option input[type="radio"]:checked + .produce-card {
+  transform: scale(1.22);
+}
+
 /* ===== Responsive tweaks ===== */
 @media (max-width: 520px) {
   .brand { font-size: 22px; }
   .logo { height: 26px; }
   .nav-link { font-size: 13px; }
+}
+
+/* Slightly shrink icons on very small screens */
+@media (max-width: 480px) {
+  .produce-image {
+    width: 44px;
+    height: 44px;
+  }
 }
 
 /* ===== Help / Popup Modal ===== */
