@@ -14,7 +14,6 @@
         <img class="logo" src="{% static 'assets/logo.svg' %}" alt="FoodLens logo">
         <span>FOOD</span><span class="orange">LENS</span>
       </div>
-
       <nav class="nav-links">
         <a href="{% url 'what_is_foodlens' %}" class="nav-link">What is FoodLens?</a>
       </nav>
@@ -38,72 +37,154 @@
         </div>
       </div>
 
+      <!-- ===== Image-based Produce Selector (replaces dropdown) ===== -->
       <div class="field">
-        <label for="produceSelect">Select Produce Type (Optional)</label>
-        <select id="produceSelect">
-          <option value="">-- Leave blank for top 3 predictions --</option>
-          <option value="apple">Apple</option>
-          <option value="banana">Banana</option>
-          <option value="bittergourd">Bitter Gourd</option>
-          <option value="capsicum">Capsicum</option>
-          <option value="cucumber">Cucumber</option>
-          <option value="okra">Okra</option>
-          <option value="orange">Orange</option>
-          <option value="potato">Potato</option>
-          <option value="tomato">Tomato</option>
-        </select>
-      </div>
+        <label>Select Produce Type (Optional)</label>
 
-      <div class="field">
-        <label for="desc">How to Use FoodLens</label>
-        <div id="desc" class="instructions instructions-list">
-          <ol>
-            <li>
-              Pick the perishable food item of your choice.
-              <span class="note">*Our AI model is currently trained only for apples, bananas, bitter gourds, capsicums, cucumbers, okras, oranges, potatoes, & tomatoes.*</span>
-              <span class="note">*Uploading other items may result in inaccurate results.*</span>
-            </li>
-            <li>Upload <strong>one</strong> image of the perishable food item you selected.</li>
-            <li>(Optional) Select the produce type to get a specific freshness score.</li>
-            <li>Click <em>Submit</em> when you're ready to see the quality of your food item!</li>
-          </ol>
+        <div class="produce-grid">
+          <!-- Apple -->
+          <label class="produce-option">
+            <input type="radio" name="produce_type" value="apple">
+            <div class="produce-card">
+              <img src="{% static 'assets/Apple.svg' %}" alt="Apple" class="produce-image">
+            </div>
+          </label>
+
+          <!-- Banana -->
+          <label class="produce-option">
+            <input type="radio" name="produce_type" value="banana">
+            <div class="produce-card">
+              <img src="{% static 'assets/Banana.svg' %}" alt="Banana" class="produce-image">
+            </div>
+          </label>
+
+          <!-- Bell Pepper -->
+          <label class="produce-option">
+            <input type="radio" name="produce_type" value="bellpepper">
+            <div class="produce-card">
+              <img src="{% static 'assets/Bell Pepper.svg' %}" alt="Bell Pepper" class="produce-image">
+            </div>
+          </label>
+
+          <!-- Bitter Gourd -->
+          <label class="produce-option">
+            <input type="radio" name="produce_type" value="bittergourd">
+            <div class="produce-card">
+              <img src="{% static 'assets/Bitter Gourd.svg' %}" alt="Bitter Gourd" class="produce-image">
+            </div>
+          </label>
+
+          <!-- Cucumber -->
+          <label class="produce-option">
+            <input type="radio" name="produce_type" value="cucumber">
+            <div class="produce-card">
+              <img src="{% static 'assets/Cucumber.svg' %}" alt="Cucumber" class="produce-image">
+            </div>
+          </label>
+
+          <!-- Okra -->
+          <label class="produce-option">
+            <input type="radio" name="produce_type" value="okra">
+            <div class="produce-card">
+              <img src="{% static 'assets/Okra.svg' %}" alt="Okra" class="produce-image">
+            </div>
+          </label>
+
+          <!-- Orange -->
+          <label class="produce-option">
+            <input type="radio" name="produce_type" value="orange">
+            <div class="produce-card">
+              <img src="{% static 'assets/Orange.svg' %}" alt="Orange" class="produce-image">
+            </div>
+          </label>
+
+          <!-- Potato -->
+          <label class="produce-option">
+            <input type="radio" name="produce_type" value="potato">
+            <div class="produce-card">
+              <img src="{% static 'assets/Potato.svg' %}" alt="Potato" class="produce-image">
+            </div>
+          </label>
+
+          <!-- Tomato -->
+          <label class="produce-option">
+            <input type="radio" name="produce_type" value="tomato">
+            <div class="produce-card">
+              <img src="{% static 'assets/Tomato.svg' %}" alt="Tomato" class="produce-image">
+            </div>
+          </label>
+
+          <!-- I'm Unsure (acts like 'no specific type') -->
+          <label class="produce-option">
+            <input type="radio" name="produce_type" value="">
+            <div class="produce-card">
+              <img src="{% static 'assets/Unsure.svg' %}" alt="I'm Unsure" class="produce-image">
+            </div>
+          </label>
         </div>
       </div>
 
       <button class="btn" id="submitBtn">Submit</button>
 
-      <!-- Placeholder for prediction result -->
       <div id="result" class="prediction-result" style="margin-top: 20px;"></div>
-
     </section>
   </main>
 
+  <!-- ===== Help / Instruction Popup ===== -->
+  <button id="helpBtn">?</button>
+
+  <!-- Modal always rendered, hide initially if show_popup is false -->
+  <div id="instructionModal" {% if not show_popup %}style="display:none"{% endif %}>
+    <div class="modal-content">
+      <button class="close-btn">&times;</button>
+      <h3>How to Use FoodLens</h3>
+      <ol>
+        <li>
+          Pick the perishable food item of your choice.
+          <span class="note">*Our AI model is currently trained only for apples, bananas, bitter gourds, capsicums, cucumbers, okras, oranges, potatoes, & tomatoes.*</span>
+          <span class="note">*Uploading other items may result in inaccurate results.*</span>
+        </li>
+        <li>Upload <strong>one</strong> image of the perishable food item you selected.</li>
+        <li>(Optional) Select the produce type to get a specific freshness score.</li>
+        <li>Click <em>Submit</em> when you're ready to see the quality of your food item!</li>
+      </ol>
+      <div class="dont-show">
+        <input type="checkbox" id="dontShowAgain">
+        <label for="dontShowAgain">Don't show again</label>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // ===== Image + Prediction JS =====
     const submitBtn = document.getElementById('submitBtn');
     const imageInput = document.getElementById('imageInput');
     const produceSelect = document.getElementById('produceSelect');
     const resultDiv = document.getElementById('result');
 
+    // helper: get selected produce from radio buttons
+    function getSelectedProduce() {
+      const selected = document.querySelector('input[name="produce_type"]:checked');
+      return selected ? selected.value : '';
+    }
+
     submitBtn.addEventListener('click', async () => {
-      if (!imageInput.files.length) {
-        alert("Please upload an image first!");
-        return;
+      if (!imageInput.files.length) { 
+        alert("Please upload an image first!"); 
+        return; 
       }
 
       const file = imageInput.files[0];
       const formData = new FormData();
       formData.append('image', file);
-      
-      const selectedProduce = produceSelect.value;
-      if (selectedProduce) {
-        formData.append('produce_type', selectedProduce);
+
+      const produceType = getSelectedProduce();
+      // Only send produce_type if user picked a specific item (not "I'm Unsure")
+      if (produceType) {
+        formData.append('produce_type', produceType);
       }
 
-      const response = await fetch('/predict/', {
-        method: 'POST',
-        body: formData
-      });
-
+      const response = await fetch('/predict/', { method: 'POST', body: formData });
       const data = await response.json();
 
       if (data.error) {
@@ -111,7 +192,6 @@
         return;
       }
 
-      // If produce type was selected, show freshness score
       if (data.segmented_result) {
         const seg = data.segmented_result;
         const adjusted_freshness =
@@ -171,7 +251,8 @@
         });
       }
     });
-    
+
+    // ===== Preview JS =====
     const previewImage = document.getElementById('previewImage');
     const previewActions = document.getElementById('previewActions');
     const replaceBtn = document.getElementById('replaceBtn');
@@ -200,11 +281,65 @@
       else clearPreview();
     });
 
-    replaceBtn.addEventListener('click', () => {
-      imageInput.click();
+    replaceBtn.addEventListener('click', () => imageInput.click());
+    clearBtn.addEventListener('click', clearPreview);
+
+    // ===== Modal / Help Button JS =====
+    const helpBtn = document.getElementById('helpBtn');
+    const modal = document.getElementById('instructionModal');
+    const closeBtn = modal.querySelector('.close-btn');
+    const dontShowCheckbox = document.getElementById('dontShowAgain');
+
+    async function getPopupState() {
+      try {
+        const resp = await fetch("{% url 'get_instruction_popup_state' %}");
+        if (!resp.ok) return;
+        const data = await resp.json();
+        dontShowCheckbox.checked = data.hide === true;
+      } catch (err) { console.error(err); }
+    }
+
+    async function hidePopupIfNeeded() {
+      const hide = dontShowCheckbox.checked;
+      try {
+        await fetch("{% url 'hide_instruction_popup' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+          },
+          body: JSON.stringify({ hide })
+        });
+      } catch (err) { console.error(err); }
+    }
+
+    async function showModal() {
+      await getPopupState(); // sync checkbox with backend
+      modal.style.display = 'flex';
+    }
+
+    // Page load: auto show only if show_popup true
+    if ("{{ show_popup }}".toLowerCase() === "true") modal.style.display = "flex";
+
+    // Always opens on ?
+    helpBtn.addEventListener('click', showModal);
+
+    // Close modal
+    closeBtn.addEventListener('click', async () => {
+      await hidePopupIfNeeded();
+      modal.style.display = 'none';
     });
 
-    clearBtn.addEventListener('click', clearPreview);
+    // Close on outside click
+    modal.addEventListener('click', async (e) => {
+      if (e.target === modal) {
+        await hidePopupIfNeeded();
+        modal.style.display = 'none';
+      }
+    });
+
+    // Sync checkbox on page load
+    getPopupState();
   </script>
 </body>
 </html>

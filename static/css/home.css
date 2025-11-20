@@ -34,7 +34,7 @@ body{
   color: #1c7d7c;
   padding: 8px 0;
   border-bottom: 1px solid #1c7d7c;
-  position: relative; /* allows absolute positioning for nav-links */
+  position: relative;
 }
 
 .header-inner {
@@ -43,7 +43,7 @@ body{
   padding: 0 12px;
   display: flex;
   align-items: center;
-  justify-content: center; /* centers logo + title */
+  justify-content: center;
   position: relative;
 }
 
@@ -56,11 +56,11 @@ body{
   font-family: var(--font-title);
   font-weight: 800;
   letter-spacing: 0.4px;
-  font-size: 34px; /* larger title */
+  font-size: 34px;
 }
 
 .logo {
-  height: 120px; /* smaller balanced logo */
+  height: 120px;
   width: auto;
   display: block;
 }
@@ -154,9 +154,9 @@ textarea:focus {
 }
 .btn:hover { background: var(--leaf-green); }
 
-/* ===== Instructions ===== */
+/* ===== Instructions (if used elsewhere) ===== */
 .instructions {
-  background: #fff;
+  background: var(--bg);
   border: var(--accent-orange);
   border-radius: var(--radius-md);
   padding: 16px 18px;
@@ -234,6 +234,58 @@ textarea:focus {
   background: var(--primary-teal);
 }
 
+/* =========================
+   Produce Selector (Image Buttons)
+   ========================= */
+.produce-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+  align-items: center;
+}
+
+.produce-option {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+}
+
+/* Hide the actual radio */
+.produce-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Card wrapper – minimal, no visible box */
+.produce-card {
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(1);
+  transition: transform 0.15s ease;
+}
+
+/* The icon itself */
+.produce-image {
+  width: 135px;
+  height: 135px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Hover: grow a bit */
+.produce-card:hover {
+  transform: scale(1.12);
+}
+
+/* Selected: grow more */
+.produce-option input[type="radio"]:checked + .produce-card {
+  transform: scale(1.22);
+}
+
 /* ===== Responsive tweaks ===== */
 @media (max-width: 520px) {
   .brand { font-size: 22px; }
@@ -273,4 +325,137 @@ textarea:focus {
   margin-top: 8px;
   font-weight: 700;
   color: var(--text);
+}
+/* Slightly shrink icons on very small screens */
+@media (max-width: 480px) {
+  .produce-image {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* ===== Help / Popup Modal ===== */
+#helpBtn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--primary-teal);
+  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  transition: transform 0.15s ease;
+}
+
+#helpBtn:hover {
+  transform: scale(1.1);
+  background: var(--leaf-green);
+}
+
+/* Modal overlay */
+#instructionModal {
+  display: none; /* hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.35); /* slightly lighter like your screenshot */
+  z-index: 1040;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  backdrop-filter: blur(1px);
+}
+
+/* Modal card */
+#instructionModal .modal-content {
+  background: #ffffff; /* white card style like your second image */
+  border-radius: var(--radius-lg);
+  padding: 28px 36px;
+  max-width: 560px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+
+  font-family: var(--font-body);
+  color: var(--text);
+}
+
+/* Title */
+#instructionModal h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-teal); /* match upload page header */
+}
+
+/* List styling */
+#instructionModal ol {
+  padding-left: 20px;
+  margin: 0 0 16px 0;
+}
+
+#instructionModal li {
+  margin-bottom: 14px;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+/* Notes under bullet #1 */
+#instructionModal .note {
+  display: block;
+  font-size: 0.85rem;
+  margin-top: 6px;
+  margin-left: 4px;
+  color: #555;
+  font-style: italic;
+}
+
+/* Close button (X) */
+#instructionModal .close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text);
+  transition: color 0.2s ease;
+}
+
+#instructionModal .close-btn:hover {
+  color: var(--accent-orange);
+}
+
+/* "Don't show again" checkbox */
+#instructionModal .dont-show {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+#instructionModal .dont-show input[type="checkbox"] {
+  accent-color: var(--accent-orange);
+}
+
+.hidden {
+  display: none !important;
 }
