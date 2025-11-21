@@ -243,6 +243,7 @@ textarea:focus {
   gap: 12px;
   margin-top: 6px;
   align-items: center;
+  justify-content: center;
 }
 
 .produce-option {
@@ -270,20 +271,20 @@ textarea:focus {
 
 /* The icon itself */
 .produce-image {
-  width: 135px;
-  height: 135px;
+  width: 125px;
+  height: 125px;
   object-fit: contain;
   display: block;
 }
 
 /* Hover: grow a bit */
 .produce-card:hover {
-  transform: scale(1.12);
+  transform: scale(1.25);
 }
 
 /* Selected: grow more */
 .produce-option input[type="radio"]:checked + .produce-card {
-  transform: scale(1.22);
+  transform: scale(1.32);
 }
 
 /* ===== Responsive tweaks ===== */
@@ -458,4 +459,28 @@ textarea:focus {
 
 .hidden {
   display: none !important;
+}
+
+/* =========================
+   NEW: Grey-out unselected produce after one is chosen
+   ========================= */
+
+/* When ANY produce is selected, dim all options */
+.produce-grid.selected-active .produce-card {
+  opacity: 0.32;
+  filter: grayscale(100%);
+  transition: opacity 0.2s ease, filter 0.2s ease, transform 0.15s ease;
+}
+
+/* Keep the selected option full color + full opacity */
+.produce-option input[type="radio"]:checked + .produce-card {
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+/* If user hovers a dimmed option, brighten it a bit so they know it’s still clickable */
+.produce-grid.selected-active .produce-option:hover .produce-card {
+  opacity: 0.75;
+  filter: grayscale(30%);
+  transform: scale(1.18);
 }

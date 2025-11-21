@@ -220,7 +220,6 @@
     // ===== Image + Prediction JS =====
     const submitBtn = document.getElementById('submitBtn');
     const imageInput = document.getElementById('imageInput');
-    const produceSelect = document.getElementById('produceSelect');
     const resultDiv = document.getElementById('result');
 
     // helper: get selected produce from radio buttons
@@ -241,10 +240,9 @@
       const file = imageInput.files[0];
       const formData = new FormData();
       formData.append('image', file);
-      //if (produceSelect.value) formData.append('produce_type', produceSelect.value);
-      if (produceSelect.value) {
-        formData.append('produce_type', produceSelect.value);
-      }
+
+      const selectedProduce = getSelectedProduce();
+      if (selectedProduce) formData.append('produce_type', selectedProduce);
 
       const response = await fetch('/predict/', { method: 'POST', body: formData });
       const data = await response.json();
@@ -356,6 +354,18 @@
     replaceBtn.addEventListener('click', () => imageInput.click());
     clearBtn.addEventListener('click', clearPreview);
 
+    // ===== NEW: Produce Grey-out (only visual; still allows changing selection) =====
+    document.addEventListener("DOMContentLoaded", function () {
+      const grid = document.querySelector(".produce-grid");
+      const radios = document.querySelectorAll(".produce-option input[type='radio']");
+
+      radios.forEach(radio => {
+        radio.addEventListener("change", () => {
+          grid.classList.add("selected-active");
+        });
+      });
+    });
+
     // ===== Modal / Help Button JS =====
     const helpBtn = document.getElementById('helpBtn');
     const modal = document.getElementById('instructionModal');
@@ -438,7 +448,6 @@
 
         // Build data to send 
         const payload = {
-          //image_id: window.currentImageID || null,  // may need to set this when you get a prediction
           image_id: currentImageId,
           helpful: helpfulInput.value,
           explanation: explanationInput.value
@@ -446,9 +455,7 @@
 
         try {
           const response = await fetch("{% url 'submit_feedback' %}", {
-          //const response = await fetch('/submit_feedback/', {
             method: 'POST',
-            //headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
             headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
             body: JSON.stringify(payload)
           });
@@ -459,7 +466,6 @@
             messageSpan.innerText = 'Thanks for your feedback!';
             feedbackSubmitBtn.disabled = true; // Prevents re-clicking
           } else {
-            //messageSpan.innerText = 'Error saving feedback.';
             messageSpan.innerText = result.error || 'Error saving feedback.';
           }
         }
@@ -543,7 +549,6 @@
       const { ok, data } = await postJson("{% url 'ajax_login' %}", { username, password });
       if (!ok) return showAuthError(data.error || 'Login failed');
 
-      // success: reload to update authenticated UI
       location.reload();
     });
 
@@ -558,7 +563,6 @@
         return showAuthError(data.error || 'Signup failed');
       }
 
-      // success: reload and close
       location.reload();
     });
 
