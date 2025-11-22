@@ -6,6 +6,70 @@
   <title>FoodLens - Home</title>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/home.css' %}">
+
+  <!-- Inline styles for the new result modal (keeps styling consistent with instruction modal) -->
+  <style>
+    /* ===== RESULT MODAL ===== */
+    #resultModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none; /* hidden by default */
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.35);
+      z-index: 1050;
+      padding: 24px;
+      backdrop-filter: blur(1px);
+    }
+
+    #resultModal .modal-content {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 28px 36px;
+      max-width: 560px; /* auto-size-ish (you said auto) */
+      width: 100%;
+      box-shadow: 0 18px 40px rgba(0,0,0,.08);
+      position: relative;
+      max-height: none;
+      overflow-y: visible;
+      font-family: var(--font-body);
+      color: var(--text);
+    }
+
+    #resultModal h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-family: var(--font-title);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary-teal);
+    }
+
+    #resultModal .close-result {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: transparent;
+      border: none;
+      font-size: 22px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text);
+      transition: color 0.2s ease;
+    }
+
+    #resultModal .close-result:hover { color: var(--accent-orange); }
+
+    /* keep freshness styles inside modal consistent */
+    #resultModal .freshness-container { margin-top: 8px; }
+    #resultModal .freshness-label { display:block; font-weight:700; margin-bottom:6px; color:var(--primary-teal); font-family:var(--font-title); }
+    #resultModal .freshness-bar { width:100%; background:#f2f2f2; border-radius:8px; height:25px; overflow:hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,0.6); }
+    #resultModal .freshness-bar__fill { height:100%; width:0%; background-color:red; transition: width 1.8s cubic-bezier(0.25,0.6,0.5,1), background-color 1.8s cubic-bezier(0.25,0.6,0.5,1); }
+    #resultModal .freshness-legend { margin-top:8px; font-weight:700; color:var(--text); }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -126,23 +190,8 @@
 
       <button class="btn" id="submitBtn">Submit</button>
 
-      <div id="result" class="prediction-result" style="margin-top: 20px;"></div>
-
-      <!-- ===== Feedback ===== -->
-      <div id="feedbackBox" style="display:none; margin-top:16px;border-top:1px solid #eee;padding-top:12px;">
-        <h4>Was this helpful?</h4>
-        <div>
-          <label><input type="radio" name="helpful" value="true"> Yes</label>
-          <label style="margin-left:12px;"><input type="radio" name="helpful" value="false"> No</label>
-        </div>
-        <div style="margin-top:8px;">
-          <textarea id="feedbackExplanation" rows="3" style="width:100%;" placeholder="Optional: tell us more"></textarea>
-        </div>
-        <div style="margin-top:8px;">
-          <button id="feedbackSubmitBtn" class="btn">Submit feedback</button>
-          <span id="feedbackMessage" style="margin-left:8px;"></span>
-        </div>
-      </div>
+      <!-- NOTE: on-page #result and #feedbackBox removed and moved into the modal below.
+           The feedback UI still uses the same IDs so your existing JS works. -->
 
     </section>
   </main>
@@ -216,11 +265,44 @@
     </div>
   </div>
 
+  <!-- ===== NEW: Result Modal (contains both results and feedback) ===== -->
+  <div id="resultModal" aria-hidden="true">
+    <div class="modal-content">
+      <button class="close-result">&times;</button>
+
+      <!-- RESULT will be injected into this body -->
+      <div id="resultModalBody">
+        <!-- We'll dynamically populate: either segmented_result bar or top-3 predictions -->
+      </div>
+
+      <!-- ===== Feedback =====
+           Moved here (same markup/IDs as before so existing JS works) -->
+      <div id="feedbackBox" style="display:none; margin-top:16px;border-top:1px solid #eee;padding-top:12px;">
+        <h4>Was this helpful?</h4>
+        <div>
+          <label><input type="radio" name="helpful" value="true"> Yes</label>
+          <label style="margin-left:12px;"><input type="radio" name="helpful" value="false"> No</label>
+        </div>
+        <div style="margin-top:8px;">
+          <textarea id="feedbackExplanation" rows="3" style="width:100%;" placeholder="Optional: tell us more"></textarea>
+        </div>
+        <div style="margin-top:8px;">
+          <button id="feedbackSubmitBtn" class="btn">Submit feedback</button>
+          <span id="feedbackMessage" style="margin-left:8px;"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ===== Image + Prediction JS =====
     const submitBtn = document.getElementById('submitBtn');
     const imageInput = document.getElementById('imageInput');
-    const resultDiv = document.getElementById('result');
+
+    // New modal elements
+    const resultModal = document.getElementById('resultModal');
+    const resultModalBody = document.getElementById('resultModalBody');
+    const closeResultBtn = document.querySelector('#resultModal .close-result');
 
     // helper: get selected produce from radio buttons
     function getSelectedProduce() {
@@ -231,10 +313,16 @@
     // Hold id of image just analyzed
     let currentImageId = null;
 
+    // Modal close handlers
+    closeResultBtn.addEventListener('click', () => { resultModal.style.display = 'none'; });
+    resultModal.addEventListener('click', (e) => {
+      if (e.target === resultModal) resultModal.style.display = 'none';
+    });
+
     submitBtn.addEventListener('click', async () => {
-      if (!imageInput.files.length) { 
-        alert("Please upload an image first!"); 
-        return; 
+      if (!imageInput.files.length) {
+        alert("Please upload an image first!");
+        return;
       }
 
       const file = imageInput.files[0];
@@ -249,10 +337,11 @@
 
       // Handle error
       if (data.error) {
-        resultDiv.innerHTML = `<p style="color:red">${data.error}</p>`;
+        resultModalBody.innerHTML = `<p style="color:red">${data.error}</p>`;
         // Hide feedback box if there was an error
         document.getElementById('feedbackBox').style.display = 'none';
         currentImageId = null;
+        resultModal.style.display = 'flex';
         return;
       }
 
@@ -268,8 +357,8 @@
           ((seg.fresh_prob / (seg.fresh_prob + seg.rotten_prob)) * 100).toFixed(2);
         const freshnessNum = parseFloat(adjusted_freshness);
 
-        // Render the bar HTML
-        resultDiv.innerHTML = `
+        // Render the bar HTML into modal body
+        resultModalBody.innerHTML = `
           <h3>Results:</h3>
           <p><strong>Status:</strong> ${seg.status}</p>
           <p>Fresh: ${(seg.fresh_prob*100).toFixed(2)}% | Rotten: ${(seg.rotten_prob*100).toFixed(2)}%</p>
@@ -284,7 +373,7 @@
           </div>
         `;
 
-        const fill = document.querySelector(".freshness-bar__fill");
+        const fill = resultModalBody.querySelector(".freshness-bar__fill");
 
         // Compute final color based on freshness (final RGB)
         let rFinal, gFinal, bFinal;
@@ -312,14 +401,17 @@
           });
         });
 
-      } 
+      }
       else {
         // Otherwise show top 3 predictions
-        resultDiv.innerHTML = `<h3>Top 3 Predictions:</h3>`;
+        resultModalBody.innerHTML = `<h3>Top 3 Predictions:</h3>`;
         data.predictions.forEach((pred, idx) => {
-          resultDiv.innerHTML += `<p>${idx+1}. ${pred.label}: ${(pred.prob*100).toFixed(2)}%</p>`;
+          resultModalBody.innerHTML += `<p>${idx+1}. ${pred.label}: ${(pred.prob*100).toFixed(2)}%</p>`;
         });
       }
+
+      // Show the modal (Option 1 behavior)
+      resultModal.style.display = 'flex';
     });
 
     // ===== Preview JS =====
