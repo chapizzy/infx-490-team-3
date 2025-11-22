@@ -47,8 +47,7 @@ class Image(models.Model):
         null=True,
         blank=True,
     )
-    # store uploaded image files using Django's ImageField so we can call `.save()` on it
-    image_path = models.ImageField(upload_to='uploads/%Y/%m/%d/', null=True, blank=True)
+    image_path = models.TextField(null=False)
     upload_timestamp = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=20,
