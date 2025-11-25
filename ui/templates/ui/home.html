@@ -557,6 +557,15 @@
           if (result.success) {
             messageSpan.innerText = 'Thanks for your feedback!';
             feedbackSubmitBtn.disabled = true; // Prevents re-clicking
+
+            // After short delay, clear message and reset form
+            setTimeout(() => {
+              if (result.redirect_url) {
+                window.location.href = result.redirect_url;
+              } else {
+                window.location.href = "{% url 'home' %}";
+              }  
+            }, 2000); // 2-second delay before redirect
           } else {
             messageSpan.innerText = result.error || 'Error saving feedback.';
           }
