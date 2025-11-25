@@ -147,7 +147,7 @@ def submit_feedback(request):
     fb = Feedback.objects.create(
         image=image,
         user=request.user if request.user.is_authenticated else None,
-        helpful=helpful,
+        is_helpful=helpful,
         explanation=explanation,
         session_key=session_key,
     )
