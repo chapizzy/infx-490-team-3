@@ -1,0 +1,203 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FoodLens – FAQ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/faq.css' %}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <img class="logo" src="{% static 'assets/logo.svg' %}" alt="FoodLens logo">
+        <span>FOOD</span><span class="orange">LENS</span>
+      </div>
+
+      <nav class="nav-links">
+        <a href="{% url 'home' %}" class="nav-link">Home</a>
+        <a href="{% url 'what_is_foodlens' %}" class="nav-link">What is FoodLens?</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2 class="page-title">Frequently Asked Questions</h2>
+
+    <div class="faq-list">
+
+      <!-- 1 -->
+      <div class="faq-item">
+        <button class="faq-question">What is FoodLens?</button>
+        <div class="faq-answer">
+          <p>
+            FoodLens is an AI-powered tool that analyzes images of fruits &amp; vegetables
+            to estimate their freshness or rottenness. By using computer vision, it helps
+            users identify produce quality before purchase or consumption.
+          </p>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="faq-item">
+        <button class="faq-question">How does FoodLens determine freshness?</button>
+        <div class="faq-answer">
+          <p>
+            When you upload an image, our trained AI model analyzes color, texture, and
+            visual features unique to each type of produce. It then generates a freshness
+            score based on patterns it learned from thousands of labeled images.
+          </p>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="faq-item">
+        <button class="faq-question">Which fruits &amp; vegetables are supported?</button>
+        <div class="faq-answer">
+          <p>Currently, FoodLens can analyze:</p>
+          <ul>
+            <li>Apples</li>
+            <li>Bananas</li>
+            <li>Bell Peppers</li>
+            <li>Bitter Gourds</li>
+            <li>Cucumbers</li>
+            <li>Okras</li>
+            <li>Oranges</li>
+            <li>Potatoes</li>
+            <li>Tomatoes</li>
+          </ul>
+          <p>We plan to expand to more items in future versions.</p>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="faq-item">
+        <button class="faq-question">How accurate is the AI model?</button>
+        <div class="faq-answer">
+          <p>
+            Our model achieves an average accuracy of 85–90%, depending on lighting
+            conditions and image clarity. Continuous training and dataset updates help
+            improve accuracy over time.
+          </p>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="faq-item">
+        <button class="faq-question">What kind of images should I upload?</button>
+        <div class="faq-answer">
+          <p>For best results:</p>
+          <ul>
+            <li>Use natural lighting (avoid harsh shadows).</li>
+            <li>Place the produce on a plain background.</li>
+            <li>Ensure the entire fruit or vegetable is visible in the frame.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="faq-item">
+        <button class="faq-question">Is my uploaded image stored permanently?</button>
+        <div class="faq-answer">
+          <p>
+            No. FoodLens only stores your image if you choose to provide feedback on the
+            model’s prediction. If you don’t provide feedback, your image is automatically
+            deleted after processing.
+          </p>
+          <p>
+            When you do provide feedback, your image is linked to your account so that our
+            team can contact you if follow-up questions arise or if we need clarification
+            to help improve model accuracy.
+          </p>
+        </div>
+      </div>
+
+      <!-- 7 -->
+      <div class="faq-item">
+        <button class="faq-question">Can FoodLens detect mold or damage?</button>
+        <div class="faq-answer">
+          <p>
+            Yes, to a certain extent. The AI can recognize surface-level defects such as
+            bruises, mold, or discoloration that typically indicate spoilage. However, it
+            cannot detect internal issues that are not visible from the outside.
+          </p>
+        </div>
+      </div>
+
+      <!-- 8 -->
+      <div class="faq-item">
+        <button class="faq-question">Does lighting or background affect the results?</button>
+        <div class="faq-answer">
+          <p>
+            Yes. Extremely dark or overly bright lighting may reduce accuracy. We recommend
+            photographing your produce under natural indoor or outdoor lighting against a
+            neutral background.
+          </p>
+        </div>
+      </div>
+
+      <!-- 9 -->
+      <div class="faq-item">
+        <button class="faq-question">Can I use FoodLens for commercial or market purposes?</button>
+        <div class="faq-answer">
+          <p>
+            Not yet. FoodLens is currently designed for testing, research, and educational
+            use only. However, future versions are planned for integration into commercial
+            and market environments to help automate quality control, improve inventory
+            management, reduce labor costs, and minimize both the environmental and
+            financial impact of food waste.
+          </p>
+        </div>
+      </div>
+
+      <!-- 10 -->
+      <div class="faq-item">
+        <button class="faq-question">Is FoodLens free to use?</button>
+        <div class="faq-answer">
+          <p>
+            Every user receives 3 free uploads without an account. After those initial
+            uploads, you’ll be asked to create a free account to continue using FoodLens.
+          </p>
+          <p>
+            Only the feedback you provide is saved to your account, which includes your
+            uploaded image, the AI model’s prediction results, and your input or comments
+            about the outcome. This allows you to track your past feedback and helps our
+            team continue improving FoodLens accuracy.
+          </p>
+        </div>
+      </div>
+
+      <!-- 11 -->
+      <div class="faq-item">
+        <button class="faq-question">Who developed FoodLens?</button>
+        <div class="faq-answer">
+          <p>
+            FoodLens was created by a team of five senior students at the University of
+            Louisiana at Lafayette. Each team member contributed a different area of
+            expertise including AI development, data integration, UI/UX design, frontend
+            development, and database management to build a user-friendly, AI-powered tool
+            that helps people assess the freshness of their produce.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    // Simple accordion behavior
+    document.querySelectorAll(".faq-question").forEach(btn => {
+      btn.addEventListener("click", () => {
+        btn.classList.toggle("active");
+        const panel = btn.nextElementSibling;
+        if (panel.style.maxHeight) {
+          panel.style.maxHeight = null;
+        } else {
+          panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+      });
+    });
+  </script>
+</body>
+</html>

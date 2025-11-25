@@ -76,7 +76,9 @@ body{
   top: 50%;
   transform: translateY(-50%);
   display: flex;
-  align-items: center;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .nav-link {

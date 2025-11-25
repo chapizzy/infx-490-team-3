@@ -113,6 +113,10 @@ def hide_instruction_popup(request):
 def what_is_foodlens(request):
     return render(request, "ui/what_is_foodlens.html")
 
+# FAQ page view
+def faq(request):
+    return render(request, "ui/faq.html")
+
 
 # Existing feedback view remains unchanged
 @csrf_exempt

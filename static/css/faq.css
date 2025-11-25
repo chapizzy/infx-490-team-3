@@ -1,0 +1,176 @@
+/* =========================
+   FoodLens Design Tokens
+   ========================= */
+:root{
+  --bg:           #faf9f6;
+  --primary-teal: #1c7d7c;
+  --accent-orange:#ffa724;
+  --leaf-green:   #08af0f;
+  --text:         #1f2a2a;
+
+  --radius-md: 12px;
+  --shadow-lg: 0 18px 40px rgba(0,0,0,.08);
+
+  --font-title: "Raleway", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-body:  "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* ===== Base ===== */
+*{ box-sizing: border-box; }
+body{
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.5;
+}
+
+/* =========================================
+   HEADER (Copied EXACTLY from your request)
+   ========================================= */
+.site-header {
+  background: #faf9f6;
+  color: #1c7d7c;
+  padding: 8px 0;
+  border-bottom: 1px solid #1c7d7c;
+  position: relative;
+}
+
+.header-inner {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-title);
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  font-size: 34px;
+}
+
+.logo {
+  height: 120px;
+  width: auto;
+  display: block;
+}
+
+.brand span:first-child { color: #1c7d7c; }
+.brand .orange { color: var(--accent-orange); }
+
+.nav-links {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 6px
+}
+
+.nav-link {
+  color: #1c7d7c;
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--accent-orange);
+}
+
+/* ===== Page Layout ===== */
+.container{
+  max-width: 920px;
+  margin: 44px auto;
+  padding: 0 16px;
+}
+
+.page-title{
+  text-align: center;
+  font-family: var(--font-title);
+  font-weight: 800;
+  color: var(--primary-teal);
+  margin-bottom: 24px;
+}
+
+/* ===== FAQ Box ===== */
+.faq-list{
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 20px 22px;
+}
+
+/* ===== Individual FAQ Items ===== */
+.faq-item + .faq-item{
+  border-top: 1px solid #faf9f6;
+}
+
+/* ===== Accordion Question Button ===== */
+.faq-question{
+  width: 100%;
+  padding: 14px 0;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+
+  font-family: var(--font-title);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary-teal);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.faq-question::after{
+  content: "▼";
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.faq-question.active::after{
+  transform: rotate(180deg);
+}
+
+/* ===== Accordion Answer ===== */
+.faq-answer{
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.faq-answer p,
+.faq-answer ul{
+  margin: 0;
+  padding: 0 0 14px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--accent-orange);
+}
+
+.faq-answer ul{
+  padding-left: 20px;
+}
+
+/* ===== Responsive Tweaks ===== */
+@media (max-width: 520px) {
+  .brand{ font-size: 22px; }
+  .logo{ height: 80px; }
+  .nav-link{ font-size: 13px; }
+}

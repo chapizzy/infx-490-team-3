@@ -28,33 +28,26 @@ body {
   line-height: 1.6;
 }
 
-/* ===== Header (matches home.css) ===== */
+/* ===== Header (centered title + logo, nav link on right) ===== */
 .site-header {
   background: #faf9f6;
   color: #1c7d7c;
-  padding: 6px 0;
+  padding: 8px 0;
   border-bottom: 1px solid #1c7d7c;
+  position: relative;
 }
 
 .header-inner {
   max-width: 920px;
   margin: 0 auto;
   padding: 0 12px;
-
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  justify-content: center;
+  position: relative;
 }
 
-/* Small logo next to text */
-.logo {
-  height: 120px;
-  width: auto;
-  display: block;
-}
-
-/* Brand text with logo beside */
+/* Centered brand with logo and title */
 .brand {
   display: flex;
   align-items: center;
@@ -63,32 +56,38 @@ body {
   font-family: var(--font-title);
   font-weight: 800;
   letter-spacing: 0.4px;
-  font-size: 34px; 
+  font-size: 34px;
 }
 
-/* Make "FOOD" teal and "LENS" orange */
-.brand span:first-child {
-  color: #1c7d7c;
-}
-.brand .orange {
-  color: var(--accent-orange);
+.logo {
+  height: 120px;
+  width: auto;
+  display: block;
 }
 
-/* ===== Header navigation link ===== */
+/* "FOOD" teal, "LENS" orange */
+.brand span:first-child { color: #1c7d7c; }
+.brand .orange { color: var(--accent-orange); }
+
+/* Nav link positioned to the right side */
 .nav-links {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
-  align-items: center;
-  gap: 16px;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .nav-link {
   color: #1c7d7c;
   font-family: var(--font-title);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 16px;
   text-decoration: none;
   line-height: 1;
-  padding: 4px 0;
   transition: color 0.2s ease;
 }
 
