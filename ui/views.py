@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 import json
 from .models import Image as ImageModel, Feedback
+from django.urls import reverse
 
 def get_instruction_popup_state(request):
     if request.user.is_authenticated:
@@ -156,4 +157,9 @@ def submit_feedback(request):
         session_key=session_key,
     )
 
-    return JsonResponse({'success': True, 'feedback_id': fb.id})
+    #return JsonResponse({'success': True, 'feedback_id': fb.id})
+    return JsonResponse({
+        'success': True,
+        'feedback_id': fb.id,
+        'redirect_url': reverse('home'),
+    })
