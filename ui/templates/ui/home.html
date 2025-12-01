@@ -299,6 +299,11 @@
     // ===== Image + Prediction JS =====
     const submitBtn = document.getElementById('submitBtn');
     const imageInput = document.getElementById('imageInput');
+    // Preload audio assets for feedback. These are user-gesture triggered (submit click).
+    const audioFresh = new Audio("{% static 'assets/fresh_fare.mp3' %}");
+    audioFresh.preload = 'auto';
+    const audioRotten = new Audio("{% static 'assets/rotten_fare.mp3' %}");
+    audioRotten.preload = 'auto';
 
     // New modal elements
     const resultModal = document.getElementById('resultModal');
@@ -415,6 +420,17 @@
           requestAnimationFrame(() => {
             fill.style.width = `${freshnessNum}%`;
             fill.style.backgroundColor = `rgb(${rFinal},${gFinal},${bFinal})`;
+
+            // Play audio to match result status. Only play user-gesture-driven audio.
+            try {
+              const status = (seg.status || '').toLowerCase();
+              const isRotten = status.includes('rot') || status.includes('bad');
+              const toPlay = isRotten ? audioRotten : audioFresh;
+              // Reset other audio
+              [audioFresh, audioRotten].forEach(a => { try { a.pause(); a.currentTime = 0; } catch (e) {} });
+              toPlay.volume = 0.85;
+              toPlay.play().catch(err => console.warn('Audio playback blocked:', err));
+            } catch (err) { console.warn('Audio error', err); }
           });
         });
 
