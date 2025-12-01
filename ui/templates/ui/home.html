@@ -337,7 +337,7 @@
 
       // Handle error
       if (data.error) {
-        resultModalBody.innerHTML = `<p style="color:red">${data.error}</p>`;
+        resultModalBody.innerHTML = `<p class="result-error">${data.error}</p>`;
         // Hide feedback box if there was an error
         document.getElementById('feedbackBox').style.display = 'none';
         currentImageId = null;
@@ -356,20 +356,36 @@
         const adjusted_freshness =
           ((seg.fresh_prob / (seg.fresh_prob + seg.rotten_prob)) * 100).toFixed(2);
         const freshnessNum = parseFloat(adjusted_freshness);
+        const probSum = (seg.fresh_prob || 0) + (seg.rotten_prob || 0);
+
+        // Validate that the model's probabilities are confident enough to show a
+        // freshness result for the selected produce. If probabilities are low, show
+        // an error message instead of the freshness bar.
+        if (probSum < 0.7) {
+          // Provide a helpful error message and hide the feedback controls.
+          resultModalBody.innerHTML = `
+            <h3>Results:</h3>
+            <p><strong>Produce:</strong> ${seg.produce_type ? seg.produce_type.charAt(0).toUpperCase() + seg.produce_type.slice(1) : 'Selected produce'}</p>
+            <p class="result-error">Confidence too low to compute an accurate freshness score. Please try another produce type or a clearer image.</p>
+          `;
+          // Hide the feedback box: feedback only makes sense when there's an analysis.
+          document.getElementById('feedbackBox').style.display = 'none';
+          currentImageId = data.image_id || null;
+          // Show the modal and return early.
+          resultModal.style.display = 'flex';
+          return;
+        }
 
         // Render the bar HTML into modal body
         resultModalBody.innerHTML = `
           <h3>Results:</h3>
-          <p><strong>Status:</strong> ${seg.status}</p>
-          <p>Fresh: ${(seg.fresh_prob*100).toFixed(2)}% | Rotten: ${(seg.rotten_prob*100).toFixed(2)}%</p>
+          <p><strong>Status:</strong> ${adjusted_freshness} ${seg.status}</p>
 
           <div class="freshness-container">
-            <label class="freshness-label" for="freshnessBar">Freshness</label>
             <div id="freshnessBar" class="freshness-bar" role="progressbar"
                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="${freshnessNum}">
               <div class="freshness-bar__fill"></div>
             </div>
-            <div class="freshness-legend">${adjusted_freshness}%</div>
           </div>
         `;
 

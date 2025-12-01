@@ -327,6 +327,17 @@ textarea:focus {
   font-weight: 700;
   color: var(--text);
 }
+
+/* Light red boxed error for low-confidence or general errors. */
+.result-error {
+  background: #fff2f2 !important; /* light red/pink background */
+  border: 1px solid #e74c3c !important; /* red outline */
+  color: #7a1919 !important; /* darker red text */
+  padding: 12px 14px !important;
+  border-radius: 8px !important;
+  margin-top: 8px !important;
+  line-height: 1.4 !important;
+}
 /* Slightly shrink icons on very small screens */
 @media (max-width: 480px) {
   .produce-image {
