@@ -70,6 +70,7 @@
     #resultModal .freshness-bar__fill { height:100%; width:0%; background-color:red; transition: width 1.8s cubic-bezier(0.25,0.6,0.5,1), background-color 1.8s cubic-bezier(0.25,0.6,0.5,1); }
     #resultModal .freshness-legend { margin-top:8px; font-weight:700; color:var(--text); }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -367,7 +368,7 @@
         // Validate that the model's probabilities are confident enough to show a
         // freshness result for the selected produce. If probabilities are low, show
         // an error message instead of the freshness bar.
-        if (probSum < 0.7) {
+        if (probSum < 0.5) {
           // Provide a helpful error message and hide the feedback controls.
           resultModalBody.innerHTML = `
             <h3>Results:</h3>
@@ -421,6 +422,11 @@
             fill.style.width = `${freshnessNum}%`;
             fill.style.backgroundColor = `rgb(${rFinal},${gFinal},${bFinal})`;
 
+            // Confetti for fresh items (>= 75%)
+            if (freshnessNum >= 75) {
+              launchConfetti();
+            }
+
             // Play audio to match result status. Only play user-gesture-driven audio.
             try {
               const status = (seg.status || '').toLowerCase();
@@ -446,6 +452,25 @@
       // Show the modal (Option 1 behavior)
       resultModal.style.display = 'flex';
     });
+
+    function launchConfetti() {
+      // A simple celebratory burst
+      confetti({
+        particleCount: 200,
+        spread: 150,
+        origin: { y: 0.6 }
+      });
+
+      // A second burst for extra flair
+      setTimeout(() => {
+        confetti({
+          particleCount: 100,
+          spread: 90,
+          origin: { y: 0.6 }
+        });
+      }, 350);
+    }
+
 
     // ===== Preview JS =====
     const previewImage = document.getElementById('previewImage');
