@@ -34,7 +34,7 @@ body{
   color: #1c7d7c;
   padding: 8px 0;
   border-bottom: 1px solid #1c7d7c;
-  position: fixed;
+  position: relative;
 }
 
 .header-inner {
