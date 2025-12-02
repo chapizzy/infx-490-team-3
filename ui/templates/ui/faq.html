@@ -6,6 +6,8 @@
   <title>FoodLens – FAQ</title>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/faq.css' %}">
+  <!-- Sidebar styles -->
+  <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 </head>
 <body>
   <header class="site-header">
@@ -14,13 +16,11 @@
         <img class="logo" src="{% static 'assets/logo2.svg' %}" alt="FoodLens logo">
         <span>FOOD</span><span class="orange">LENS</span>
       </div>
-
-      <nav class="nav-links">
-        <a href="{% url 'home' %}" class="nav-link">Home</a>
-        <a href="{% url 'what_is_foodlens' %}" class="nav-link">What is FoodLens?</a>
-      </nav>
     </div>
   </header>
+
+  <!-- Sidebar + hamburger -->
+  {% include 'partials/sidebar.html' %}
 
   <main class="container">
     <h2 class="page-title">Frequently Asked Questions</h2>

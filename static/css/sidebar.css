@@ -1,0 +1,160 @@
+/* ============================
+   FoodLens Sidebar Navigation
+   ============================ */
+
+/* Colors from FoodLens design */
+:root {
+  --teal: #1c7c7d;
+  --orange: #ffa724;
+  --sidebar-green: #83C455;  /* matches screenshot */
+  --text-dark: #231F20;
+}
+
+/* ============================
+   FLOATING HAMBURGER BUTTON
+   (top-left over existing header)
+   ============================ */
+
+.hamburger-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 2000;
+
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.hamburger-icon {
+  width: 45px;
+  height: 45px;
+  /* Your icon is already #ffa724 */
+  object-fit: contain;
+}
+
+.hamburger-btn:hover {
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+.hamburger-btn.hidden {
+    display: none;
+}
+
+
+
+/* ============================
+   SIDEBAR PANEL (slide-out)
+   ============================ */
+
+.sidebar-panel {
+  position: fixed;
+  top: 0;
+  left: -320px;             /* hidden state */
+  width: 320px;
+  height: 100vh;
+
+  background: #faf9f6;
+  box-shadow: 2px 0 6px rgba(0,0,0,0.25);
+
+  transition: left 0.3s ease;
+  z-index: 1400;
+}
+
+.sidebar-panel.open {
+  left: 0;
+}
+
+/* Content spacing */
+.menu-container {
+  padding: 70px 24px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+
+
+/* ============================
+   MENU LIST
+   ============================ */
+
+.menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-link {
+  border-bottom: 1px solid rgba(35, 31, 32, 0.22);
+  padding: 18px 0;
+
+  font-family: "Open Sans", sans-serif;
+  font-size: 20px;
+  text-transform: uppercase;
+  color: var(--text-dark);
+
+  display: flex;
+  align-items: center;
+}
+
+.menu-link:last-child {
+  border-bottom: none;
+}
+
+.sidebar-link {
+  color: var(--text-dark);
+  text-decoration: none;
+  display: block;
+  width: 100%;
+}
+
+.sidebar-link:hover {
+  font-weight: 700;
+  text-decoration: underline;
+  transition: 0.2s ease;
+  font-size: 24px;
+}
+
+
+
+/* ============================
+   BACKDROP (dims page behind sidebar)
+   ============================ */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 1300;
+}
+
+.backdrop.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Close button inside sidebar */
+.sidebar-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  z-index: 2000;
+}
+
+.sidebar-close-icon {
+  width: 45px;
+  height: 45px;
+}
+

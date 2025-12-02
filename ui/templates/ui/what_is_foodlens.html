@@ -4,26 +4,35 @@
 <head>
   <meta charset="UTF-8">
   <title>What is FoodLens?</title>
+
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific CSS -->
   <link rel="stylesheet" href="{% static 'css/what_is_foodlens.css' %}">
+
+  <!-- Sidebar CSS -->
+  <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 </head>
+
 <body>
+
+  <!-- Header (nav removed) -->
   <header class="site-header">
     <div class="header-inner">
       <div class="brand">
         <img class="logo" src="{% static 'assets/logo2.svg' %}" alt="FoodLens logo">
-        <span>FOOD</span><span class="orange">LENS</span>
+        <span>What is</span><span class="orange">FoodLens</span>
       </div>
-
-      <nav class="nav-links">
-        <a href="{% url 'home' %}" class="nav-link">Back to Home</a>
-        <a href="{% url 'faq' %}" class="nav-link">FAQ</a>
-      </nav>
     </div>
   </header>
 
+  <!-- Sidebar + hamburger -->
+  {% include 'partials/sidebar.html' %}
+
   <main class="container about-layout">
     <div class="about-columns">
+
       <div class="left-column">
         <section class="about-section">
           <h3 class="orange-text">About FoodLens</h3>
@@ -51,8 +60,8 @@
           <p>
             Through this project, we aim to inspire change in how people think
             about their food by empowering them to minimize waste, make informed
-            choices, and gain confidence in the quality of what they consume. By
-            combining data science, user-centered design, and creative
+            choices, and gain confidence in the quality of what they consume.
+            By combining data science, user-centered design, and creative
             collaboration, we strive to make FoodLens not just an app, but a
             step toward a smarter, more sustainable future.
           </p>
@@ -70,16 +79,19 @@
             to deliver a product that is both technically robust and user
             friendly.
           </p>
+
           <ul class="team-list">
-            <li><strong>Madeline Aymond</strong> focuses on the user experience and interface design, ensuring the application is visually appealing, responsive, and accessible across devices.</li>
-            <li><strong>Lillie Barker</strong> contributes to the front-end structure and layout, helping to create an intuitive workflow that enhances user engagement and usability.</li>
-            <li><strong>Danny Bui</strong> leads the development of FoodLens’s AI detection model, training the system to analyze and classify perishable foods through advanced image processing.</li>
-            <li><strong>Isabelle Chapman</strong> specializes in integrating the AI model with the backend systems and curating reliable data sets to improve accuracy and performance.</li>
-            <li><strong>Reece Melancon</strong> manages the database architecture and data storage solutions, ensuring efficient performance and secure handling of user and image data.</li>
+            <li><strong>Madeline Aymond</strong> focuses on the user experience and interface design...</li>
+            <li><strong>Lillie Barker</strong> contributes to the front-end structure and layout...</li>
+            <li><strong>Danny Bui</strong> leads the development of FoodLens’s AI detection model...</li>
+            <li><strong>Isabelle Chapman</strong> integrates the AI model with backend systems...</li>
+            <li><strong>Reece Melancon</strong> manages database architecture and secure data handling...</li>
           </ul>
         </section>
       </div>
+
     </div>
   </main>
+
 </body>
 </html>

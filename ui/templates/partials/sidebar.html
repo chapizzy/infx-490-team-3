@@ -1,0 +1,89 @@
+{% load static %}
+<!-- Global sidebar + hamburger for FoodLens -->
+
+<!-- Floating hamburger button -->
+<button
+  id="sidebarToggle"
+  class="hamburger-btn"
+  aria-label="Toggle navigation"
+  aria-expanded="false"
+>
+  <img
+    src="{% static 'assets/hamburger.svg' %}"
+    alt="Menu"
+    class="hamburger-icon"
+  />
+</button>
+
+<!-- Slide-out sidebar panel -->
+<aside class="sidebar-panel" id="sidebarPanel" aria-hidden="true">
+
+  <!-- NEW: Close button inside sidebar -->
+  <button id="sidebarClose" class="sidebar-close-btn" aria-label="Close sidebar">
+    <img src="{% static 'assets/close.svg' %}" alt="Close menu" class="sidebar-close-icon">
+  </button>
+
+  <div class="menu-container">
+    <ul class="menu-list">
+
+      <li class="menu-link">
+        <a href="{% url 'home' %}" class="sidebar-link">Scan Produce</a>
+      </li>
+
+      <li class="menu-link">
+        <a href="{% url 'what_is_foodlens' %}" class="sidebar-link">
+          What is FoodLens?
+        </a>
+      </li>
+
+      <li class="menu-link">
+        <a href="{% url 'faq' %}" class="sidebar-link">
+          FAQs
+        </a>
+      </li>
+
+    </ul>
+  </div>
+</aside>
+
+<!-- Backdrop -->
+<div class="backdrop" id="sidebarBackdrop"></div>
+
+<script>
+  (function () {
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const closeBtn  = document.getElementById('sidebarClose');
+    const panel     = document.getElementById('sidebarPanel');
+    const backdrop  = document.getElementById('sidebarBackdrop');
+
+    if (!toggleBtn || !closeBtn || !panel || !backdrop) return;
+
+    function openSidebar() {
+      panel.classList.add('open');
+      backdrop.classList.add('visible');
+      toggleBtn.classList.add('hidden');   // hide hamburger
+      toggleBtn.setAttribute('aria-expanded', 'true');
+      panel.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeSidebar() {
+      panel.classList.remove('open');
+      backdrop.classList.remove('visible');
+      toggleBtn.classList.remove('hidden'); // show hamburger
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      panel.setAttribute('aria-hidden', 'true');
+    }
+
+    toggleBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      panel.classList.contains('open') ? closeSidebar() : openSidebar();
+    });
+
+    closeBtn.addEventListener('click', closeSidebar);
+    backdrop.addEventListener('click', closeSidebar);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeSidebar();
+    });
+  })();
+</script>
