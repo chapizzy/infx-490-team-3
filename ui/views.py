@@ -74,6 +74,12 @@ def ajax_signup(request):
     return JsonResponse({'error': 'Could not create user'}, status=500)
 
 
+# Signup page view
+def signup(request):
+    """Render the signup/login page."""
+    return render(request, "ui/signup.html")
+
+
 # Home page view
 def home(request):
     # Determine whether to show the instruction popup
