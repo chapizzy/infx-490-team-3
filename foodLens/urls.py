@@ -17,9 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from classifier import views
+from ui import views as ui_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('ui.urls')),
+    path('', ui_views.signup, name='landing'),  # Signup page as landing page
+    path('home/', include('ui.urls')),  # Home and other pages under /home/
     path('predict/', views.predict_view, name='predict'),
 ]
